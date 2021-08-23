@@ -1,0 +1,223 @@
+---
+title: 'BIO 621: Data Wrangling and Analysis Using R'
+author: "Jeremy Van Cleve"
+output: html_document
+date: 23th August 2021
+---
+
+# Outline for today
+
+0.  I was an R newbie too!
+1.  Go over syllabus
+2.  Install R and RStudio
+3.  What is R?
+4.  What are Markdown and R Markdown?
+
+# Syllabus
+
+-   The syllabus will be located here: <https://github.com/vancleve/BIO621-DWVR>.
+-   This is also where R and R Markdown documents will be located. The only files that will be kept on the [Canvas site](https://uk.instructure.com/courses/2009268) are the PDF copies of the reference books and the completed labs and figures that you submit.
+-   I'll update the syllabus and schedule of topics as necessary.
+
+# Install R and RStudio
+
+## Downloading
+
+If you haven't already, download R and R studio
+
+-   To download R, go here: <https://mirrors.nics.utk.edu/cran/>
+
+-   To download RStudio, go here <https://www.rstudio.com/products/rstudio/download/>\
+    or here <https://www.rstudio.com/products/rstudio/download/preview/>
+
+    - Note: Either the regular or "preview version" is fine. 
+    The "preview version" includes some new features, so feel free to get it if you'd like to play with them.
+
+## Installing
+
+If you need directions, especially for how update your packages if you already have R, go here: <https://stat545.com/install.html>
+
+## Tidyverse
+
+Many of the packages that packages that we will use have been helpfully collected together into a metapackage called `tidyverse`. Install this first thing by typing the following at the console:
+
+```{r, eval=FALSE}
+install.packages("tidyverse")
+```
+
+## Running RStudio
+
+### What is RStudio?
+
+RStudio is an Integrated Development Environment (IDE) for the R programming language.
+
+While you can write R code in any text editor you like and then run that code with the R interpreter, there are many things that an IDE can do that help you be more efficient when programming.
+
+1.  Syntax highlighting (e.g., see the markdown!)
+2.  File/project organization (see "Files" pane)
+3.  Examining variables that you've set (see the "Environment" pane)
+4.  Easily execute code and examine its text output (see "Console") or graphical output (see "Viewer")
+5.  View help files (see "Help")
+6.  Installing/updating R packages (see "Tools" menu)
+7.  Debugging (see "Debug" menu)
+8.  Projects (see "File" and "Tools")
+
+When using RStudio, I encourage you to:
+
+1.  Play around with different arrangements for the windows/panes
+
+2.  **LEARN KEYBOARD SHORTCUTS**. They can make you much, much more efficient.
+
+    -   Shift+Alt+K (MAC/PC): Keyboard shortcut quick reference.
+    -   Shift+Command/Control+K (MAC/PC): Knit current document (i.e., turn in HTML/DOCX/PDF)
+    -   Command/Control+Enter (MAC/PC): Run selected lines
+    -   Shift+Command/Control+Enter: Run current "chunk" (R Notebook only)
+    -   etc
+
+3.  Use a Project for all assignments in the course (save them in a single directory or its subdirectories).
+
+For example, to generate 10 random numbers between 0 and 1 we can easily run the following code:
+
+```{r}
+runif(10)
+```
+
+To make sure you can do run the above, you want to run the following code that installs R Markdown:
+
+```{r eval=FALSE}
+install.packages("rmarkdown")
+```
+
+For a cheatsheet on RStudio, go here:
+
+<https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf>
+
+## What is R?
+
+### First, there was "S".
+
+-   S was designed by John Chambers and others at Bell Labs in the 1970s specifically for data analysis and statistics.
+-   R was developed in 1991 by **R**oss Ihaka and **R**obert Gentleman and re-implemented much of S after S became licensed software.
+
+### Then there was "R"
+
+-   R was open-sourced in 1995 and John Chambers and other statisticians are part of its core development team.
+-   R is object-oriented (i.e., you can build containers of variables and the like), like Java.
+-   R is interpreted (i.e., the interpreter turns interprets your text code immediately and runs it), like Python.
+-   R has a tonne of packages for statistics and biology.
+-   More on the basics of R next time.
+
+# What are Markdown and R Markdown?
+
+## Markdown: a plain text (i.e., just characters) way of "formatting" text
+
+-   Markdown is a kind of "markup" language (e.g., HTML).
+-   Designed for simplicity and readability
+-   No need to "view" Markdown to read it easily
+-   Often used in code documentation
+-   Increasingly used in full document preparation (journal article, books, etc)
+
+Ok, let's get Markdown!\
+![](assets/dancing.gif)
+
+First, this whole document is R Markdown, so you can quickly see examples of the following:
+
+-   Headings are created with hash symbols "\#"
+
+    -   "\#" is the "first" heading
+    -   "\#\#" is the "second" heading, which is smaller (how much smaller? set by the "stylesheet")
+    -   etc
+
+-   *Italic text* in encapsulated by one \* or asterisk, **Bold text** by two asterisks.
+
+-   Lists can start with -, \*, or +.
+
+    -   Sublists are indented with four spaces.
+
+-   New paragraphs are separated by blank lines.
+
+    Line breaks, without a new paragraph, need two spaces\
+    in order to be recognized. These can be used in lists too.
+
+-   Links use angle brackets \<\>: <https://www.r-project.org/>
+
+-   Links with different text use `[text](http://link.to.something)`
+
+-   Images use `![](path.to.image)`
+
+-   For more details, see [R Markdown cheat sheet](https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf)
+
+## R Markdown: a way to mix text (Markdown) and R code (R)
+
+Ok, lets put some R in this thing.
+
+Make a code "**chunk**"" with three back ticks followed by an r in braces. End the chunk with three back ticks:
+
+```{r}
+paste("Hello", "World!")
+```
+
+Place code inline with a single back ticks. The first back tick must be followed by an R, like this: `r paste("Hello", "World!")`.
+
+You can control how the **chunks** work by adding options like `echo=FALSE` to hide the code when you create the HTML
+
+```{r}
+runif(10)
+```
+
+or you can add the option `eval=FALSE` so that the code isn't evaluated (see the `install.packages` lines in this `.Rmd`)
+
+You can do plots too. Let's do one whose "name" is "cool_plot" (you can see the name in the `R Markdown` output, which is useful for debugging) and is just a bunch (1000) of normally distributed numbers (mean=0, std=1):
+
+```{r cool_plot}
+plot(rnorm(1000, 0, 1))
+```
+
+Now, lets do something a little more interesting. We can pull in data from all kinds of places including websites and actively updated databases. For example, here are COVID-19 cases numbers for the United States for Kentucky and Tennessee from the New York Times <https://github.com/nytimes/covid-19-data>:
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+
+us = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
+ky_tn = 
+  us %>% 
+  filter(state %in% c("Kentucky", "Tennessee")) %>% 
+  pivot_wider(c(date, state), names_from = state, values_from = cases)
+  
+ky_tn_daily = 
+  tibble(date = ky_tn$date[-1], Kentucky = diff(ky_tn$Kentucky), Tennessee = diff(ky_tn$Tennessee)) %>% 
+  pivot_longer(-date, names_to = "state", values_to = "deaths")
+
+ky_tn_daily %>% 
+  filter(state %in% c("Kentucky", "Tennessee")) %>%
+  ggplot(aes(x=date, y=deaths, color=state)) + 
+  geom_line() + 
+  labs(y="Cumulative COVID-19 deaths", color="State") +
+  theme_classic()
+```
+
+More about R Markdown can be found in the [R Markdown Reference Guide](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf).
+
+## Reproducible Research
+
+![Table 1 from Alston and Rick (2021)](assets/tab1_alston_rick_2021.png)
+
+# Lab ![](assets/beaker.png)
+
+#### Write a paragraph about what kind of data you are thinking of analyzing and visualizing
+
+-   Create your own R Markdown document.
+
+-   Give the document a title and author.
+
+-   Use some Markdown elements to structure your document. Include the following:
+
+    -   headings
+    -   a link
+    -   an image
+    -   some bold or italic text
+
+-   Make sure you can get proper HTML in RStudio.
+    (I prefer the "Preview in Viewer Pane" under the gear icon for seeing HTML)
+
+-   Remember to upload the file with a ".Rmd" suffix to Canvas.
