@@ -192,7 +192,7 @@ ky_tn_daily %>%
   filter(state %in% c("Kentucky", "Tennessee")) %>%
   ggplot(aes(x=date, y=deaths, color=state)) + 
   geom_line() + 
-  labs(y="Cumulative COVID-19 deaths", color="State") +
+  labs(y="Daily COVID-19 deaths", color="State") +
   theme_classic()
 ```
 
