@@ -118,7 +118,8 @@ The following are some popular books on R. PDFs are available for "check out" on
 - Zelterman, Daniel. 2015. Applied Multivariate Statistics with R. Springer
 - Phillips, Nathaniel. 2016. YaRrr! The Pirate’s Guide to R.
 - Wickham, Hadley. 2016. ggplot2. Springer
-- Wickham, Hadley and Grolemund, Garrett. 2017. R for Data Science. O'Reilly.
+- Wickham, Hadley and Grolemund, Garrett. 2017. R for Data Science. O'Reilly
+- Mailund, Thomas. 2017. Beginning Data Science in R. Apress
 
 ## Internet ##
 

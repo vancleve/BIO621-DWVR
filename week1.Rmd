@@ -179,20 +179,20 @@ Now, lets do something a little more interesting. We can pull in data from all k
 library(tidyverse)
 
 us = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
-ky_tn = 
-  us %>% 
-  filter(state %in% c("Kentucky", "Tennessee")) %>% 
-  pivot_wider(c(date, state), names_from = state, values_from = cases)
-  
-ky_tn_daily = 
-  tibble(date = ky_tn$date[-1], Kentucky = diff(ky_tn$Kentucky), Tennessee = diff(ky_tn$Tennessee)) %>% 
-  pivot_longer(-date, names_to = "state", values_to = "deaths")
 
-ky_tn_daily %>% 
+us_daily_cases = us %>% 
+  # make each state its own column
+  pivot_wider(c(date, state), names_from = state, values_from = cases) %>% 
+  # for each column subtract, subtract the previous day's case #
+  mutate(across(where(is.numeric), ~ .x - lag(.x))) %>%
+  # put baack into tidy format for plotting
+  pivot_longer(-date, names_to = "state", values_to = "cases")
+
+us_daily_cases %>% 
   filter(state %in% c("Kentucky", "Tennessee")) %>%
-  ggplot(aes(x=date, y=deaths, color=state)) + 
+  ggplot(aes(x=date, y=cases, color=state)) + 
   geom_line() + 
-  labs(y="Daily COVID-19 deaths", color="State") +
+  labs(y="Daily COVID-19 cases", color="State") +
   theme_classic()
 ```
 

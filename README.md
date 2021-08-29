@@ -168,7 +168,8 @@ under “Modules: References”.
 -   Phillips, Nathaniel. 2016. YaRrr! The Pirate’s Guide to R.
 -   Wickham, Hadley. 2016. ggplot2. Springer
 -   Wickham, Hadley and Grolemund, Garrett. 2017. R for Data Science.
-    O’Reilly.
+    O’Reilly
+-   Mailund, Thomas. 2017. Beginning Data Science in R. Apress
 
 ## Internet
 
