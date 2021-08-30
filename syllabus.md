@@ -1,4 +1,7 @@
-# BIO 621 – Data Wrangling and Visualization Using R – Fall 2021 #
+---
+title: BIO 621 – Data Wrangling and Visualization Using R – Fall 2021 
+---
+
 \setlength{\LTleft}{0pt}
 
 ![](assets/clinton_lead_2016.png){ width=50% }\	

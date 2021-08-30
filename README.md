@@ -1,5 +1,3 @@
-# BIO 621 – Data Wrangling and Visualization Using R – Fall 2021
-
 <img src="assets/clinton_lead_2016.png" style="width:50.0%" /> 
 
 # Course information
