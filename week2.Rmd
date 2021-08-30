@@ -273,13 +273,13 @@ us_cases = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/mas
   mutate(across(where(is.numeric), ~ .x - lag(.x)))
 ```
 
-2. Try plotting the cases for Kentucky. You'll notice immediately these are *cumulative* cases over the whole pandemic.
+2. Try plotting the cases for Kentucky.
 
 ```{r}
 plot(us_cases[["date"]], us_cases[["Kentucky"]], type='l')
 ```
 
-3. Write a function that has the following four arguments and plots the `voters` data between two dates:
+3. Write a function that has the following four arguments and plots the `us_cases` data between two dates:
     (i) the data you want to plot
     (ii) a beginning date
     (iii) an ending date
