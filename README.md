@@ -1,4 +1,4 @@
-<img src="assets/clinton_lead_2016.png" style="width:50.0%" /> 
+![](assets/cases.jpg) 
 
 # Course information
 

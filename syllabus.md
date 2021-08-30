@@ -4,7 +4,7 @@ title: BIO 621 – Data Wrangling and Visualization Using R – Fall 2021
 
 \setlength{\LTleft}{0pt}
 
-![](assets/clinton_lead_2016.png){ width=50% }\	
+![](assets/cases.jpg)\	
 
 [github site]: https://github.com/vancleve/BIO621-DWVR
 [canvas site]: https://uk.instructure.com/courses/2009268
