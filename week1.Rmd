@@ -1,8 +1,8 @@
 ---
 title: 'BIO 621: Data Wrangling and Analysis Using R'
 author: "Jeremy Van Cleve"
-output: html_document
 date: 23th August 2021
+output: html_document
 ---
 
 # Outline for today

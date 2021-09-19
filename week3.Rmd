@@ -1,6 +1,7 @@
 ---
 title: 'Vectors, slicing, and map(ping)'
 author: "Jeremy Van Cleve"
+date: 13th September 2021
 output: html_document
 ---
 
@@ -33,7 +34,7 @@ ncol(matx)
 length(matx)
 ```
 
-Likewise, you can convert the vector to a 2x2 array:
+Likewise, you can convert the vector to a 4x4 array:
 ```{r}
 arr = array(vec, dim = c(4,4))
 arr
@@ -65,8 +66,7 @@ rmatx[2,8]
 ```
 You can also get a *"slice"* of the matrix by using the colon operator:
 ```{r}
-rmatx[
-  2,1:5]
+rmatx[2,1:5]
 ```
 yields the first five elements of the second row. Note that within the entry for the column element, you actually used a **vector for the index**. Thus, you can give any list of indices in any order you choose. For example,
 ```{r}
@@ -89,7 +89,7 @@ x
 ```
 which is a list of three vectors each three elements long. To get the first element of the list, you would do normally do
 ```{r}
-str(x[1])
+str(x[c(1,2)])
 ```
 but (using the `str` function) you can see that actually returned the first vector as a list of length one. Thus, the single brackets simply return another list that contains the elements requested. You can give the single brackets a vector of indices, so its natural that you should get a list back. To get the component of the list itself, you must use double brackets:
 ```{r}
@@ -123,6 +123,7 @@ x[["1 fancy name"]]
 - Negative integers omit the specified positions:
   
     ```{r}
+    rmatx
     rmatx[-c(1,3,5,7,9),c(2,4,6,8,10)]
     ```
     gives the even rows and even columns.
@@ -141,6 +142,7 @@ x[["1 fancy name"]]
     
     You could also just slice rows based on columns (or vice versa). This is the kind of slicing we'll often do on a data table since we will want all rows (say, results from different experiments) whose column (say, factor in the experiment) matches a certain condition. For example, suppose we want to get all rows of the matrix `rmatx` with a fourth column whose roll is less than 10. We first slice the fourth column with `rmatx[,4]` and then compare it to 10,
     ```{r}
+    rmatx
     rmatx[,4] < 10
     ```
     Note that we get a vector of boolean values indicating whether the element in that row of the fourth column is less than 10. To get only those rows of the matrix `rmatx`, we then use this vector to slice the matrix:
@@ -169,6 +171,7 @@ If you want to use apply over a matrix, the `apply` function is required. To add
 ```{r}
 matx
 apply(matx, 1, sum)
+apply(matx, 2, sum)
 ```
 However, you can do more complicated things by making custom functions and "applying" them. For example, in order to get the number of die rolls less than 10 in each column of your die roll matrix, you could try
 ```{r}
