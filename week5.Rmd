@@ -237,7 +237,7 @@ arrange(summarize(group_by(gwas, `DISEASE/TRAIT`), n_SNPS = n()), desc(n_SNPS))
 
     Each row is a gene, each column is a tissue type, and each cell contains a gene expression measurement.
 
-    **Make these data tidy!** 
+        **Make these data tidy (in one way) by collapsing the tissue columns and making the data table longer**
     
     You will need the `pivot_longer` function. The first trick here will be first to identify the "observations" and then the "names_to", which is the variable that changes across each observation. 
     
