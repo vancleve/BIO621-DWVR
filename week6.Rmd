@@ -69,6 +69,8 @@ plot(usukjpcn$year, usukjpcn$lifeExp,
      col = usukjpcn$country)
 
 legend('bottomright', legend = levels(usukjpcn$country), col = 1:4, pch = 1)
+
+levels(usukjpcn$country)
 ```
 
 Uh oh, the legend includes all the countries! This is because slicing the data doesn't dropped unused factor levels. Dang. You can fix this using the `droplevels()` function
@@ -82,6 +84,16 @@ levels(usukjpcn$country)
 legend('bottomright', legend = levels(usukjpcn$country), col = 1:4, pch = 1)
 ```
 Could we have solved the issue with `unique` instead of `droplevels`? Let's try it on our own.
+
+```{r}
+plot(usukjpcn$year, usukjpcn$lifeExp, 
+     xlab = "Year", ylab = "Life expectancy", main = plottitle,
+     col = usukjpcn$country)
+
+legend('bottomright', legend = levels(usukjpcn$country), col = 1:4, pch = 1)
+
+```
+
 
 So far, the basic `plot()` function is pretty useful. To see its limits, you can try something that **shouldn't** be that much harder: plotting these data as points connected by a line. At first pass, you could try giving the `plot()` function the `type = "l"` argument to indicated you want lines.
 ```{r}
@@ -109,7 +121,7 @@ lines(filter(usukjpcn, country == "China")$year,
 
 That was quite tedious. Another way would be to have individual plots for each line.
 ```{r}
-par(mfrow=c(1,5))
+par(mfrow=c(1,4))
 plot(filter(usukjpcn, country == "United States")$year, 
      filter(usukjpcn, country == "United States")$lifeExp, 
      xlab = "Year", ylab = "Life expectancy", main = plottitle,
@@ -138,7 +150,7 @@ To understand how `ggplot2` works, first consider how the following example repl
 ```{r}
 library(ggplot2)
 ggplot(data = gapminder) + 
-  geom_point(mapping = aes(x = year, y = lifeExp))
+  geom_point(aes(x = year, y = lifeExp))
 ```
 
 The first line has the function `ggplot`, which creates a coordinate system for the plot that you can add "layers" to. The argument to `ggplot` indicates which dataset to use. 
