@@ -39,7 +39,8 @@ library(tidyverse)
 us = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/rolling-averages/us-states.csv")
 pop = read_csv("us_census_state_pop_est.csv")
 us = left_join(us, pop %>% mutate(population = `2020`) %>% select(state, population)) %>%
-  mutate(cases_per_100k = signif(cases/population*1e5, digits = 3), deaths_per_100k = signif(deaths/population*1e5, digits = 3)) %>%
+  mutate(cases_per_100k = signif(cases/population*1e5, digits = 3)) %>%
+  mutate(deaths_per_100k = signif(deaths/population*1e5, digits = 3)) %>%
   mutate(day = factor(weekdays(date), levels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))) %>%
   mutate(month = factor(months(date), levels = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"))) %>%
   filter(!is.na(population), cases >= 0, deaths >= 0)
@@ -48,7 +49,7 @@ The above code also loads in estimated population sizes for each state from [US 
 
 These data are already pretty tidy. But what could we do to make them **even more tidy**? 
 ```{r}
-xtra_tidy_us = pivot_longer(us, c(cases, cases_avg, cases_avg_per_100k, deaths, deaths_avg, deaths_avg_per_100k), names_to = "statistic", values_to = "value")
+xtra_tidy_us = pivot_longer(us, c(cases, cases_avg, cases_per_100k, cases_avg_per_100k, deaths, deaths_per_100k, deaths_avg, deaths_avg_per_100k), names_to = "statistic", values_to = "value")
 ```
 What if we then wanted to remove the column `geoid`? We could do this:
 ```{r}
@@ -57,7 +58,8 @@ xtra_tidy_us = select(xtra_tidy_us, -geoid)
 
 Those tidying operations can be put together with the pipe operator `%>%`. The pipe allows you to easily chain together operations so that its easier to read them from left to right. For example, our previous two operations could be put together like
 ```{r}
-xtra_tidy_us = us %>% 
+xtra_tidy_us = 
+  us %>% 
   pivot_longer(c(cases, cases_avg, cases_avg_per_100k, deaths, deaths_avg, deaths_avg_per_100k), names_to = "statistic", values_to = "value") %>%
   select(-geoid)
 ```
@@ -71,6 +73,8 @@ ky_wv_tn_cases_aug_sept_2021 =
   select(-geoid) %>%
   filter(state %in% c("Kentucky", "West Virginia", "Tennessee")) %>%
   filter(date >= "2021-08-01" & date <= "2021-09-30")
+
+ky_wv_tn_cases_aug_sept_2021
 ```
 Note the use of the match operator `%in%`. It's a nice way to say that an element should exactly match one of a list of values.
 
@@ -80,7 +84,8 @@ Note the use of the match operator `%in%`. It's a nice way to say that an elemen
 
 In previous weeks, you have produced simple scatter and line plots. With these the case data, we can produce a scatter plot with `geom_point`.
 ```{r}
-ky_wv_tn_plot = ky_wv_tn_cases_aug_sept_2021 %>% ggplot(aes(x=date, y=cases_per_100k, color=state))
+ky_wv_tn_plot = ky_wv_tn_cases_aug_sept_2021 %>% 
+  ggplot(aes(x=date, y=cases_per_100k, color=state))
 ky_wv_tn_plot + geom_point()
 ```
 We can produce a line through the points by adding `geom_line`.
@@ -166,12 +171,7 @@ cases_exceed_100_per_100k %>%
 
 ## Histograms
 
-When your data are continuous, a histogram or similar plot is often useful. For example, you can add a column to the previous table that measure the margin or difference between the Hillary and Trump poll numbers.
-```{r}
-us %>% group_by(state) %>% summarize(total_avg_deaths_per_100k = mean(deaths_per_100k))
-```
-
-To get a histogram of the margin, use the `geom_histogram` function. We can for example look at how many days across all the states had a certain number of cases per 100k.
+To get a histogram, we use the `geom_histogram` function. We can for example look at how many days across all the states had a certain number of cases per 100k.
 ```{r}
 us %>% ggplot() +
   geom_histogram(aes(x = cases_per_100k))
@@ -209,7 +209,7 @@ us %>% ggplot() +
 You might have noticed that R keeps reminding you to adjust the `binwidth`. This is simply the width of the bins on the x-axis. For example, a binwidth of 0.1 yields
 ```{r}
 us %>% ggplot() +
-  geom_freqpoly(aes(x = log10(1 + cases_per_100k), color=day), binwidth = 0.1)
+  geom_freqpoly(aes(x = log10(1 + cases_per_100k), color=day), binwidth = 0.2)
 ```
 
 Suppose that you want to smooth the above plot so that it looks like some continuous distribution. The statistical method used to do this is called a "kernel density estimate" or KDE. Essentially, a basic KDE tries to combine Gaussian distributions together in a way to approximate empirical distribution. The geometry function to use for a KDE is `geom_density`.
