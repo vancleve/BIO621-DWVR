@@ -60,7 +60,7 @@ To give a flavor of the power of tidy data and `ggplot2`, we'll look at an examp
 # https://www.ebi.ac.uk/gwas/docs/file-downloads
 # we'll load a subset of these data; namely, the 100 diseases with the most SNPs in the database once we remove those associated with some common body/weight and education phenotypes
 
-gwas = read_tsv("gwas_catalog_v1.0.2-associations_e104_r2021-09-23_no-waist|hip|body|blood|education|math_top100.tsv")
+gwas = read_tsv("gwas_catalog_v1.0.2-associations_e104_r2021-09-23_no-waist_hip_body_blood_education_math_top100.tsv")
 filter(gwas, `DISEASE/TRAIT` == 'Prostate cancer' | `DISEASE/TRAIT` == "Colorectal cancer" | `DISEASE/TRAIT` == "Breast cancer") %>% 
   ggplot(aes(x=CHR_POS)) + geom_point(aes(y=PVALUE_MLOG, color=`DISEASE/TRAIT`))
 ```
