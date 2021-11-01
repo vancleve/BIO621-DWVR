@@ -230,7 +230,7 @@ Here, `facet_grid` arranges the plots nicely in a grid. Positive values of expre
 
 ### Problems
 
-1. Use GWAS data from last week (`gwas_catalog_v1.0.2-associations_e93_r2018-09-18_top40.tsv`): 
+1. Use GWAS data from last week (`gwas_catalog_v1.0.2-associations_e104_r2021-09-23_no-waist_hip_body_blood_education_math_top100.tsv`): 
     - Create a plot with `ggplot()` that shows the `PVALUE_MLOG` as a function of `CHR_POS` for **two** different values of `DISEASE/TRAIT` (pick your favorites!)
     - Make the points for each disease/trait a different color
 
