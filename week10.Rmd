@@ -313,7 +313,7 @@ One word of warning here is that saving a heat map as a ".pdf" may still result 
     ```{r, eval=FALSE}
     imprint = read_excel("babak-etal-2015_imprinted-mouse.xlsx", na = "NaN")
     ```
-    - You'll have to wrangle the data into a form that `ggplot` likes first.
+    - Wrangle the data first into a "tidy" format (genes, tissue, and expression as spearate columns).
     - Use a perceptually uniform color map
     - Resize the figure so the tick labels are readable
     - Add appropriate plot title and axes labels
