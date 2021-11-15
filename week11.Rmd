@@ -123,7 +123,8 @@ Let's see an example of PCA. We can use the `prcomp` function is R to generate t
 ```{r}
 bpca = blue_jays %>% select(-BirdID, -KnownSex, -Sex) %>% prcomp()
 
-cbind(blue_jays, bpca$x) %>% ggplot(aes(x=PC1, y=PC2)) + geom_point(aes(color=KnownSex))
+cbind(blue_jays, bpca$x) %>% ggplot(aes(x=PC1, y=PC2)) + 
+  geom_point(aes(color=KnownSex))
 ```
 
 This plot shows all the bird samples plotted on the two first principal components. You can immediately see that males and females are roughly two different clouds of points, which accords with our prior knowledge that the sexes differ in body morphology. To see how much of the variance each PC explains, we look at the `summary`.
@@ -154,12 +155,10 @@ This just shows that mass dominates PC1 whereas PC2 measures how the rest of the
 Finally, let's do a PCA for data that doesn't have such a clear group as sex. One example are the gene expression data from the genomic imprinting dataset. Here, we'll do a PCA using the `Genes` as variables. This entails using `pivot_wider` to put the `Genes` as variables or columns (which of course is how the original `.xlsx` file was, but we're just using the tidy data as practice)
 
 ```{r}
-library(readxl)
-
 imprint = read_csv("babak-etal-2015_imprinted-mouse_tidy.csv")
 
 imprint_t = imprint %>% pivot_wider(names_from = Genes, values_from = expression) %>% na.omit()
-ipca = imprint_t %>% select(-tissue)%>% prcomp()
+ipca = imprint_t %>% select(-tissue) %>% prcomp()
 
 data.frame(tissue=imprint_t$tissue, ipca$x) %>% ggplot(aes(x=PC1, y=PC2)) + 
   geom_point() + 
