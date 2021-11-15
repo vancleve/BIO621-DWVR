@@ -1,8 +1,8 @@
 ---
 title: 'Heat maps, countour maps, and colors'
 author: "Jeremy Van Cleve"
-output: html_document
 date: 8th November 2021
+output: html_document
 ---
   
 ```{r setup, include=FALSE}
@@ -268,7 +268,7 @@ You can also save a specific plot that you have saved.
 ```{r, eval = FALSE}
 fp = ggplot(faithfuld, aes(waiting, eruptions)) + theme_bw() +
   geom_raster(aes(fill = density), interpolate = TRUE) +
-  scale_fill_viridis()
+  scale_fill_viridis_c()
 
 ggsave("faithful.jpg", fp)
 ```

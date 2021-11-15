@@ -1,8 +1,8 @@
 ---
 title: 'Text manipulation: regular expressions'
 author: "Jeremy Van Cleve"
-output: html_document
 date: 1st November 2021
+output: html_document
 ---
   
 ```{r setup, include=FALSE}
