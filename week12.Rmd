@@ -294,7 +294,7 @@ macaque_graph %>%
     
 3. Identify the dataset that you would like to use for your project talk
     - Briefly describe the data
-    - Briefly describe each of the three figures you would like to make with these data
+    - Briefly describe each of the figures you would like to make with these data
     - Identify any major hurdles to wrangling or plotting these data
     - You may change alter your dataset and figures for the final project talk, but use this as an opportunity to nail serious candidate dataset and figures.
 
