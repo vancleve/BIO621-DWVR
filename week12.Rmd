@@ -152,6 +152,7 @@ To use an adjacency matrix with weights, add the `weighted = TRUE` argument to `
 
 There are a number of other parameters that one can use in `igraph` to alter how `plot` displays the network. To see some of these, we'll load the social network derived from dominance behavior in a colony of 62 adult female Japanese macaques (*Macaca fuscata fuscata*)[^3]. The edges are weighted since and show the number of dominance encounters between two individuals. 
 ```{r, message = FALSE}
+macaques = read_csv("moreno_macaques.csv")
 
 mg = graph_from_data_frame(macaques)
 mg
@@ -285,7 +286,7 @@ macaque_graph %>%
     - Plot this adjacency matrix as a network
     - Make the edge widths proportional to the overlap in TV favorites
 
-2. Use the data file `rugosa_social_network.csv`, which describes the social network of the sleepy lizard (*Tiliqua rugosa*)[^4] as an **adjacency matrix**. You may plot using the basic `igraph` functions or the `ggraph` ones. Use `column_to_rownames(var = "ID")` before converting the data frame to a matrix since the graph functions like matrices with rownames.
+2. Use the data file `rugosa_social_network.csv`, which describes the social network of the sleepy lizard (*Tiliqua rugosa*)[^4] as an **adjacency matrix**. You may plot using the basic `igraph` functions or the `ggraph` ones. Use `column_to_rownames(var = "ID")` before converting the data frame to a matrix since the graph functions like matrices with rownames.    
     - Read in the file (hint: you may need to be careful with which function and/or parameters you use here to get the matrix right, which includes denoting missing values in the matrix).
     - Plot the social network of the sleepy lizard
     - Make the node size proportional to the eigenvalue centrality of the node
