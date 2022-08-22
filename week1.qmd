@@ -1,11 +1,10 @@
 ---
 title: 'BIO 621: Data Wrangling and Analysis Using R'
 author: "Jeremy Van Cleve"
-date: 23th August 2021
-output: html_document
+date: 22 08 2022
+output: html
 ---
 
-# Outline for today
 
 0.  I was an R newbie too!
 1.  Go over syllabus
@@ -16,32 +15,34 @@ output: html_document
 # Syllabus
 
 -   The syllabus will be located here: <https://github.com/vancleve/BIO621-DWVR>.
--   This is also where R and R Markdown documents will be located. The only files that will be kept on the [Canvas site](https://uk.instructure.com/courses/2009268) are the PDF copies of the reference books and the completed labs and figures that you submit.
+-   This is also where R and R Markdown documents will be located. The only files that will be kept on the [Canvas site](https://uk.instructure.com/courses/2041707) are the PDF copies of the reference books and the completed labs and figures that you submit.
 -   I'll update the syllabus and schedule of topics as necessary.
 
 # Install R and RStudio
 
 ## Downloading
 
-If you haven't already, download R and R studio
+First step, download R, RStudio, and Quarto
 
--   To download R, go here: <https://mirrors.nics.utk.edu/cran/>
+-   Required: computer with Windows 10 or 11 or Mac with macOS 10.15 or later.
 
--   To download RStudio, go here <https://www.rstudio.com/products/rstudio/download/>\
-    or here <https://www.rstudio.com/products/rstudio/download/preview/>
+-   To download R, go here: <https://mirrors.nics.utk.edu/cran/>.
 
-    - Note: Either the regular or "preview version" is fine. 
-    The "preview version" includes some new features, so feel free to get it if you'd like to play with them.
+-   To download RStudio, go here: <https://www.rstudio.com/products/rstudio/download/#download>.\
+    You should be installing version 2022.07 or later.
+    
+-   To download Quarto, go here: <https://quarto.org/docs/get-started/>.
 
 ## Installing
 
-If you need directions, especially for how update your packages if you already have R, go here: <https://stat545.com/install.html>
+If you need directions, this may help: <https://quarto.org/docs/get-started/hello/rstudio.html>. If you already have R and need to update your packages, go here: <https://stat545.com/install.html> (these are a little dated now since the release of Quarto, but should still be helpful).
 
 ## Tidyverse
 
 Many of the packages that packages that we will use have been helpfully collected together into a metapackage called `tidyverse`. Install this first thing by typing the following at the console:
 
-```{r, eval=FALSE}
+```{r}
+#| eval: false
 install.packages("tidyverse")
 ```
 
@@ -53,14 +54,15 @@ RStudio is an Integrated Development Environment (IDE) for the R programming lan
 
 While you can write R code in any text editor you like and then run that code with the R interpreter, there are many things that an IDE can do that help you be more efficient when programming.
 
-1.  Syntax highlighting (e.g., see the markdown!)
-2.  File/project organization (see "Files" pane)
-3.  Examining variables that you've set (see the "Environment" pane)
-4.  Easily execute code and examine its text output (see "Console") or graphical output (see "Viewer")
-5.  View help files (see "Help")
-6.  Installing/updating R packages (see "Tools" menu)
-7.  Debugging (see "Debug" menu)
-8.  Projects (see "File" and "Tools")
+@.  Syntax highlighting
+@.  **New** visual editor (WYSIWYM editing: <https://en.wikipedia.org/wiki/WYSIWYM>)
+@.  File/project organization (see "Files" pane)
+@.  Examining variables that you've set (see the "Environment" pane)
+@.  Easily execute code and examine its text output (see "Console") or graphical output (see "Viewer")
+@.  View help files (see "Help")
+@.  Installing/updating R packages (see "Tools" menu)
+@.  Debugging (see "Debug" menu)
+@.  Projects (see "File" and "Tools")
 
 When using RStudio, I encourage you to:
 
@@ -69,7 +71,7 @@ When using RStudio, I encourage you to:
 2.  **LEARN KEYBOARD SHORTCUTS**. They can make you much, much more efficient.
 
     -   Shift+Alt+K (MAC/PC): Keyboard shortcut quick reference.
-    -   Shift+Command/Control+K (MAC/PC): Knit current document (i.e., turn in HTML/DOCX/PDF)
+    -   Shift+Command/Control+K (MAC/PC): Render (or "knit") current document (i.e., turn in HTML/DOCX/PDF)
     -   Command/Control+Enter (MAC/PC): Run selected lines
     -   Shift+Command/Control+Enter: Run current "chunk" (R Notebook only)
     -   etc
@@ -84,13 +86,14 @@ runif(10)
 
 To make sure you can do run the above, you want to run the following code that installs R Markdown:
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 install.packages("rmarkdown")
 ```
 
 For a cheatsheet on RStudio, go here:
 
-<https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf>
+<https://github.com/rstudio/cheatsheets/raw/main/rstudio-ide.pdf>
 
 ## What is R?
 
@@ -107,7 +110,7 @@ For a cheatsheet on RStudio, go here:
 -   R has a tonne of packages for statistics and biology.
 -   More on the basics of R next time.
 
-# What are Markdown and R Markdown?
+# What are Markdown, R Markdown, and Quarto?
 
 ## Markdown: a plain text (i.e., just characters) way of "formatting" text
 
@@ -120,12 +123,12 @@ For a cheatsheet on RStudio, go here:
 Ok, let's get Markdown!\
 ![](assets/dancing.gif)
 
-First, this whole document is R Markdown, so you can quickly see examples of the following:
+First, this whole document is Markdown, so you can quickly see examples of the following:
 
 -   Headings are created with hash symbols "\#"
 
     -   "\#" is the "first" heading
-    -   "\#\#" is the "second" heading, which is smaller (how much smaller? set by the "stylesheet")
+    -   "\##" is the "second" heading, which is smaller (how much smaller? set by the "stylesheet")
     -   etc
 
 -   *Italic text* in encapsulated by one \* or asterisk, **Bold text** by two asterisks.
@@ -145,9 +148,9 @@ First, this whole document is R Markdown, so you can quickly see examples of the
 
 -   Images use `![](path.to.image)`
 
--   For more details, see [R Markdown cheat sheet](https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf)
+-   For more details, see the [Quarto docs](https://quarto.org/docs/authoring/markdown-basics.html). Quarto uses a ["flavor" of Markdown](https://pandoc.org/MANUAL.html#pandocs-markdown) created for [Pandoc](https://pandoc.org/), which is the tool Quarto uses to convert Markdown into all the different document types (e.g., PDF, DOCX, HTML, etc).
 
-## R Markdown: a way to mix text (Markdown) and R code (R)
+## R Markdown and Quarto: mixing text (Markdown) and R code (R)
 
 Ok, lets put some R in this thing.
 
@@ -159,17 +162,19 @@ paste("Hello", "World!")
 
 Place code inline with a single back ticks. The first back tick must be followed by an R, like this: `r paste("Hello", "World!")`.
 
-You can control how the **chunks** work by adding options like `echo=FALSE` to hide the code when you create the HTML
+You can control how the **chunks** of R code work in the rendered document by adding options like `#| echo: false` to hide the code when you create the HTML
 
 ```{r}
+#| echo: false
 runif(10)
 ```
 
-or you can add the option `eval=FALSE` so that the code isn't evaluated (see the `install.packages` lines in this `.Rmd`)
+or you can add the option `eval=FALSE` so that the code isn't evaluated (see the `install.packages` lines in this `.qmd`)
 
-You can do plots too. Let's do one whose "name" is "cool_plot" (you can see the name in the `R Markdown` output, which is useful for debugging) and is just a bunch (1000) of normally distributed numbers (mean=0, std=1):
+You can do plots too. Let's do one with a caption ("This is a cool_plot", which you can see Quarto output, which is useful for debugging) that is just a bunch (1000) of normally distributed numbers (mean=0, std=1):
 
-```{r cool_plot}
+```{r}
+#| fig-cap: This is a cool plot
 plot(rnorm(1000, 0, 1))
 ```
 
@@ -182,7 +187,7 @@ us = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us
 
 us_daily_cases = us %>% 
   # make each state its own column
-  pivot_wider(c(date, state), names_from = state, values_from = cases) %>% 
+  pivot_wider(date, names_from = state, values_from = cases) %>% 
   # for each column subtract, subtract the previous day's case #
   mutate(across(where(is.numeric), ~ .x - lag(.x))) %>%
   # put baack into tidy format for plotting
@@ -196,7 +201,11 @@ us_daily_cases %>%
   theme_classic()
 ```
 
-More about R Markdown can be found in the [R Markdown Reference Guide](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf).
+More about using R with Markdown via Quarto can be found in the here: <https://quarto.org/docs/computations/r.html>.
+
+### Why Quarto?
+
+You may be asking yourself how this plain text gets mixed or "knitted" together with the R code and output and converted in HTML (or another document format). This is where Quarto comes in. Quarto is also a program that reads the `.qmd` first. It looks for R code blocks, runs them, and then takes that output and knits it together into a Markdown document. Quarto gives that Markdown document to Pandoc, which converts it to the output format of choice (e.g., HTML). This knitting process used to be done by an R package called `rmarkdown`, which is actually still used by Quarto. R Markdown however was focused on R whereas Quarto can be used with other languages such as Python and Julia. Hence, learning how to interact with Quarto can be helpful even if you need to switch to compling documents with calculations done using those languages.
 
 ## Reproducible Research
 
@@ -206,7 +215,7 @@ More about R Markdown can be found in the [R Markdown Reference Guide](https://w
 
 #### Write a paragraph about what kind of data you are thinking of analyzing and visualizing
 
--   Create your own R Markdown document.
+-   Create your own Markdown document.
 
 -   Give the document a title and author.
 
@@ -217,7 +226,6 @@ More about R Markdown can be found in the [R Markdown Reference Guide](https://w
     -   an image
     -   some bold or italic text
 
--   Make sure you can get proper HTML in RStudio.
-    (I prefer the "Preview in Viewer Pane" under the gear icon for seeing HTML)
+-   Make sure you can get render proper HTML in RStudio. (Select the "Preview in Viewer Pane" option under the gear icon for seeing the HTML)
 
--   Remember to upload the file with a ".Rmd" suffix to Canvas.
+-   Remember to upload the file with a ".qmd" suffix to Canvas.

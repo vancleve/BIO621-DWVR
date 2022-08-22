@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jeremy Van Cleve">
+<meta name="dcterms.date" content="2022-08-22">
+
+<title>BIO 621: Data Wrangling and Analysis Using R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="week1_files/libs/clipboard/clipboard.min.js"></script>
+<script src="week1_files/libs/quarto-html/quarto.js"></script>
+<script src="week1_files/libs/quarto-html/popper.min.js"></script>
+<script src="week1_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="week1_files/libs/quarto-html/anchor.min.js"></script>
+<link href="week1_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="week1_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="week1_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="week1_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="week1_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">BIO 621: Data Wrangling and Analysis Using R</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jeremy Van Cleve </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 22, 2022</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<ol start="0" type="1">
+<li>I was an R newbie too!</li>
+<li>Go over syllabus</li>
+<li>Install R and RStudio</li>
+<li>What is R?</li>
+<li>What are Markdown and R Markdown?</li>
+</ol>
+<section id="syllabus" class="level1">
+<h1>Syllabus</h1>
+<ul>
+<li>The syllabus will be located here: <a href="https://github.com/vancleve/BIO621-DWVR" class="uri">https://github.com/vancleve/BIO621-DWVR</a>.</li>
+<li>This is also where R and R Markdown documents will be located. The only files that will be kept on the <a href="https://uk.instructure.com/courses/2041707">Canvas site</a> are the PDF copies of the reference books and the completed labs and figures that you submit.</li>
+<li>I’ll update the syllabus and schedule of topics as necessary.</li>
+</ul>
+</section>
+<section id="install-r-and-rstudio" class="level1">
+<h1>Install R and RStudio</h1>
+<section id="downloading" class="level2">
+<h2 class="anchored" data-anchor-id="downloading">Downloading</h2>
+<p>First step, download R, RStudio, and Quarto</p>
+<ul>
+<li><p>Required: computer with Windows 10 or 11 or Mac with macOS 10.15 or later.</p></li>
+<li><p>To download R, go here: <a href="https://mirrors.nics.utk.edu/cran/" class="uri">https://mirrors.nics.utk.edu/cran/</a>.</p></li>
+<li><p>To download RStudio, go here: <a href="https://www.rstudio.com/products/rstudio/download/#download" class="uri">https://www.rstudio.com/products/rstudio/download/#download</a>.<br>
+You should be installing version 2022.07 or later.</p></li>
+<li><p>To download Quarto, go here: <a href="https://quarto.org/docs/get-started/" class="uri">https://quarto.org/docs/get-started/</a>.</p></li>
+</ul>
+</section>
+<section id="installing" class="level2">
+<h2 class="anchored" data-anchor-id="installing">Installing</h2>
+<p>If you need directions, this may help: <a href="https://quarto.org/docs/get-started/hello/rstudio.html" class="uri">https://quarto.org/docs/get-started/hello/rstudio.html</a>. If you already have R and need to update your packages, go here: <a href="https://stat545.com/install.html" class="uri">https://stat545.com/install.html</a> (these are a little dated now since the release of Quarto, but should still be helpful).</p>
+</section>
+<section id="tidyverse" class="level2">
+<h2 class="anchored" data-anchor-id="tidyverse">Tidyverse</h2>
+<p>Many of the packages that packages that we will use have been helpfully collected together into a metapackage called <code>tidyverse</code>. Install this first thing by typing the following at the console:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="running-rstudio" class="level2">
+<h2 class="anchored" data-anchor-id="running-rstudio">Running RStudio</h2>
+<section id="what-is-rstudio" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-rstudio">What is RStudio?</h3>
+<p>RStudio is an Integrated Development Environment (IDE) for the R programming language.</p>
+<p>While you can write R code in any text editor you like and then run that code with the R interpreter, there are many things that an IDE can do that help you be more efficient when programming.</p>
+<ol class="example" type="1">
+<li>Syntax highlighting</li>
+<li><em>NEW</em> Visual editor (WYSIWYM editing: <a href="https://en.wikipedia.org/wiki/WYSIWYM" class="uri">https://en.wikipedia.org/wiki/WYSIWYM</a>)</li>
+<li>File/project organization (see “Files” pane)</li>
+<li>Examining variables that you’ve set (see the “Environment” pane)</li>
+<li>Easily execute code and examine its text output (see “Console”) or graphical output (see “Viewer”)</li>
+<li>View help files (see “Help”)</li>
+<li>Installing/updating R packages (see “Tools” menu)</li>
+<li>Debugging (see “Debug” menu)</li>
+<li>Projects (see “File” and “Tools”)</li>
+</ol>
+<p>When using RStudio, I encourage you to:</p>
+<ol type="1">
+<li><p>Play around with different arrangements for the windows/panes</p></li>
+<li><p><strong>LEARN KEYBOARD SHORTCUTS</strong>. They can make you much, much more efficient.</p>
+<ul>
+<li>Shift+Alt+K (MAC/PC): Keyboard shortcut quick reference.</li>
+<li>Shift+Command/Control+K (MAC/PC): Render (or “knit”) current document (i.e., turn in HTML/DOCX/PDF)</li>
+<li>Command/Control+Enter (MAC/PC): Run selected lines</li>
+<li>Shift+Command/Control+Enter: Run current “chunk” (R Notebook only)</li>
+<li>etc</li>
+</ul></li>
+<li><p>Use a Project for all assignments in the course (save them in a single directory or its subdirectories).</p></li>
+</ol>
+<p>For example, to generate 10 random numbers between 0 and 1 we can easily run the following code:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">runif</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 0.941319223 0.859183785 0.695974525 0.668217345 0.932585533 0.001843436
+ [7] 0.031287777 0.917124821 0.679953713 0.492401037</code></pre>
+</div>
+</div>
+<p>To make sure you can do run the above, you want to run the following code that installs R Markdown:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"rmarkdown"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>For a cheatsheet on RStudio, go here:</p>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/main/rstudio-ide.pdf" class="uri">https://github.com/rstudio/cheatsheets/raw/main/rstudio-ide.pdf</a></p>
+</section>
+</section>
+<section id="what-is-r" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-r">What is R?</h2>
+<section id="first-there-was-s." class="level3">
+<h3 class="anchored" data-anchor-id="first-there-was-s.">First, there was “S”.</h3>
+<ul>
+<li>S was designed by John Chambers and others at Bell Labs in the 1970s specifically for data analysis and statistics.</li>
+<li>R was developed in 1991 by <strong>R</strong>oss Ihaka and <strong>R</strong>obert Gentleman and re-implemented much of S after S became licensed software.</li>
+</ul>
+</section>
+<section id="then-there-was-r" class="level3">
+<h3 class="anchored" data-anchor-id="then-there-was-r">Then there was “R”</h3>
+<ul>
+<li>R was open-sourced in 1995 and John Chambers and other statisticians are part of its core development team.</li>
+<li>R is object-oriented (i.e., you can build containers of variables and the like), like Java.</li>
+<li>R is interpreted (i.e., the interpreter turns interprets your text code immediately and runs it), like Python.</li>
+<li>R has a tonne of packages for statistics and biology.</li>
+<li>More on the basics of R next time.</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="what-are-markdown-r-markdown-and-quarto" class="level1">
+<h1>What are Markdown, R Markdown, and Quarto?</h1>
+<section id="markdown-a-plain-text-i.e.-just-characters-way-of-formatting-text" class="level2">
+<h2 class="anchored" data-anchor-id="markdown-a-plain-text-i.e.-just-characters-way-of-formatting-text">Markdown: a plain text (i.e., just characters) way of “formatting” text</h2>
+<ul>
+<li>Markdown is a kind of “markup” language (e.g., HTML).</li>
+<li>Designed for simplicity and readability</li>
+<li>No need to “view” Markdown to read it easily</li>
+<li>Often used in code documentation</li>
+<li>Increasingly used in full document preparation (journal article, books, etc)</li>
+</ul>
+<p>Ok, let’s get Markdown!<br>
+<img src="assets/dancing.gif" class="img-fluid"></p>
+<p>First, this whole document is Markdown, so you can quickly see examples of the following:</p>
+<ul>
+<li><p>Headings are created with hash symbols “#”</p>
+<ul>
+<li>“#” is the “first” heading</li>
+<li>“##” is the “second” heading, which is smaller (how much smaller? set by the “stylesheet”)</li>
+<li>etc</li>
+</ul></li>
+<li><p><em>Italic text</em> in encapsulated by one * or asterisk, <strong>Bold text</strong> by two asterisks.</p></li>
+<li><p>Lists can start with -, *, or +.</p>
+<ul>
+<li>Sublists are indented with four spaces.</li>
+</ul></li>
+<li><p>New paragraphs are separated by blank lines.</p>
+<p>Line breaks, without a new paragraph, need two spaces<br>
+in order to be recognized. These can be used in lists too.</p></li>
+<li><p>Links use angle brackets &lt;&gt;: <a href="https://www.r-project.org/" class="uri">https://www.r-project.org/</a></p></li>
+<li><p>Links with different text use <code>[text](http://link.to.something)</code></p></li>
+<li><p>Images use <code>![](path.to.image)</code></p></li>
+<li><p>For more details, see the <a href="https://quarto.org/docs/authoring/markdown-basics.html">Quarto docs</a>. Quarto uses a <a href="https://pandoc.org/MANUAL.html#pandocs-markdown">“flavor” of Markdown</a> created for <a href="https://pandoc.org/">Pandoc</a>, which is the tool Quarto uses to convert Markdown into all the different document types (e.g., PDF, DOCX, HTML, etc).</p></li>
+</ul>
+</section>
+<section id="r-markdown-and-quarto-mixing-text-markdown-and-r-code-r" class="level2">
+<h2 class="anchored" data-anchor-id="r-markdown-and-quarto-mixing-text-markdown-and-r-code-r">R Markdown and Quarto: mixing text (Markdown) and R code (R)</h2>
+<p>Ok, lets put some R in this thing.</p>
+<p>Make a code “<strong>chunk</strong>”” with three back ticks followed by an r in braces. End the chunk with three back ticks:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Hello"</span>, <span class="st">"World!"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Hello World!"</code></pre>
+</div>
+</div>
+<p>Place code inline with a single back ticks. The first back tick must be followed by an R, like this: Hello World!.</p>
+<p>You can control how the <strong>chunks</strong> of R code work in the rendered document by adding options like <code>#| echo: false</code> to hide the code when you create the HTML</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 0.04203279 0.79226833 0.93986163 0.66376638 0.25807401 0.07528966
+ [7] 0.16609249 0.79832640 0.99789842 0.37048815</code></pre>
+</div>
+</div>
+<p>or you can add the option <code>eval=FALSE</code> so that the code isn’t evaluated (see the <code>install.packages</code> lines in this <code>.qmd</code>)</p>
+<p>You can do plots too. Let’s do one with a caption (“This is a cool_plot”, which you can see Quarto output, which is useful for debugging) that is just a bunch (1000) of normally distributed numbers (mean=0, std=1):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="week1_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">This is a cool plot</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now, lets do something a little more interesting. We can pull in data from all kinds of places including websites and actively updated databases. For example, here are COVID-19 cases numbers for the United States for Kentucky and Tennessee from the New York Times <a href="https://github.com/nytimes/covid-19-data" class="uri">https://github.com/nytimes/covid-19-data</a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>us <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>us_daily_cases <span class="ot">=</span> us <span class="sc">%&gt;%</span> </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># make each state its own column</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(date, <span class="at">names_from =</span> state, <span class="at">values_from =</span> cases) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># for each column subtract, subtract the previous day's case #</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> .x <span class="sc">-</span> <span class="fu">lag</span>(.x))) <span class="sc">%&gt;%</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># put baack into tidy format for plotting</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>date, <span class="at">names_to =</span> <span class="st">"state"</span>, <span class="at">values_to =</span> <span class="st">"cases"</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>us_daily_cases <span class="sc">%&gt;%</span> </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(state <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Kentucky"</span>, <span class="st">"Tennessee"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>date, <span class="at">y=</span>cases, <span class="at">color=</span>state)) <span class="sc">+</span> </span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">"Daily COVID-19 cases"</span>, <span class="at">color=</span><span class="st">"State"</span>) <span class="sc">+</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="week1_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>More about using R with Markdown via Quarto can be found in the here: <a href="https://quarto.org/docs/computations/r.html" class="uri">https://quarto.org/docs/computations/r.html</a>.</p>
+<section id="why-quarto" class="level3">
+<h3 class="anchored" data-anchor-id="why-quarto">Why Quarto?</h3>
+<p>You may be asking yourself how this plain text gets mixed or “knitted” together with the R code and output and converted in HTML (or another document format). This is where Quarto comes in. Quarto is also a program that reads the <code>.qmd</code> first. It looks for R code blocks, runs them, and then takes that output and knits it together into a Markdown document. Quarto gives that Markdown document to Pandoc, which converts it to the output format of choice (e.g., HTML). This knitting process used to be done by an R package called <code>rmarkdown</code>, which is actually still used by Quarto. R Markdown however was focused on R whereas Quarto can be used with other languages such as Python and Julia. Hence, learning how to interact with Quarto can be helpful even if you need to switch to compling documents with calculations done using those languages.</p>
+</section>
+</section>
+<section id="reproducible-research" class="level2">
+<h2 class="anchored" data-anchor-id="reproducible-research">Reproducible Research</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/tab1_alston_rick_2021.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Table 1 from Alston and Rick (2021)</figcaption><p></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="lab" class="level1">
+<h1>Lab <img src="assets/beaker.png" class="img-fluid"></h1>
+<section id="write-a-paragraph-about-what-kind-of-data-you-are-thinking-of-analyzing-and-visualizing" class="level4">
+<h4 class="anchored" data-anchor-id="write-a-paragraph-about-what-kind-of-data-you-are-thinking-of-analyzing-and-visualizing">Write a paragraph about what kind of data you are thinking of analyzing and visualizing</h4>
+<ul>
+<li><p>Create your own Markdown document.</p></li>
+<li><p>Give the document a title and author.</p></li>
+<li><p>Use some Markdown elements to structure your document. Include the following:</p>
+<ul>
+<li>headings</li>
+<li>a link</li>
+<li>an image</li>
+<li>some bold or italic text</li>
+</ul></li>
+<li><p>Make sure you can get render proper HTML in RStudio. (Select the “Preview in Viewer Pane” option under the gear icon for seeing the HTML)</p></li>
+<li><p>Remember to upload the file with a “.qmd” suffix to Canvas.</p></li>
+</ul>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
