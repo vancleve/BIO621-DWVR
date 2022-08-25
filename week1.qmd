@@ -2,7 +2,9 @@
 title: 'BIO 621: Data Wrangling and Analysis Using R'
 author: "Jeremy Van Cleve"
 date: 22 08 2022
-output: html
+format: 
+  html:
+    self-contained: true
 ---
 
 
