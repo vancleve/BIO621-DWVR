@@ -274,7 +274,8 @@ In order to do this, we'll use functions from the `tidyverse` set of packages. T
 
 * Use the following code to import the `tidyverse` packages and load the COVID-19 data from the New York Times. This code should go above the function definition since its something you only need to run once per R session (whereas your function could run many times). I've added code to pull out just the cumulative number of cases, convert them into daily cases, and put the states into their own columns, which is easier for this exercise.
 
-```{r, message=FALSE}
+```{r}
+#| warning: false
 library(tidyverse)
 
 us_cases = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv") %>%
