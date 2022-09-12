@@ -1,8 +1,10 @@
 ---
 title: 'Vectors, slicing, and map(ping)'
 author: "Jeremy Van Cleve"
-date: 13th September 2021
-output: html_document
+date: 12 09 2022
+format: 
+  html:
+    self-contained: true
 ---
 
 # Outline for today
@@ -78,7 +80,7 @@ rmatx[4,]
 ```
 
 In general, slicing an array involves giving a list of indices for each dimension of the array.  
-**The magic of data wrangling comes in the many creative ways one can create these lists of indices and thus the slices that contain exactly the subset of the data that you want.**
+**The magic of data wrangling and analysis with complex data comes in the many creative ways one can create these lists of indices and thus the slices that contain exactly the subset of the data that you want.**
 
 ## Slicing lists
 
@@ -121,34 +123,33 @@ x[["1 fancy name"]]
 ## Other ways to slice
 
 - Negative integers omit the specified positions:
-  
-    ```{r}
-    rmatx
-    rmatx[-c(1,3,5,7,9),c(2,4,6,8,10)]
-    ```
-    gives the even rows and even columns.
+  ```{r}
+  rmatx
+  rmatx[-c(1,3,5,7,9),c(2,4,6,8,10)]
+  ```
+  gives the even rows and even columns.
     
 - Logical vectors selects elements of the matrix where the index vector is TRUE.  
   **This is one of the most useful ways to index.**  
   If you want to get only the rolls of the die that were less than 10, then you create a matrix of logicals
-    ```{r}
-    rmatx < 10
-    ```
-    and use it to index the matrix:
-    ```{r}
-    rmatx[rmatx < 10]
-    ```
-    Notice here that you get a vector back, not a matrix. This is because when you give a single index to a matrix, it treats the matrix like a vector with the first column first, then the second column, etc (i.e., column-major order). It also makes sense that you don't get a matrix back since the "< 10" condition could be met anywhere any number of times in the matrix (i.e., no guarantee that the result would be square like a matrix).
+  ```{r}
+  rmatx < 10
+  ```
+  and use it to index the matrix:
+  ```{r}
+  rmatx[rmatx < 10]
+  ```
+  Notice here that you get a vector back, not a matrix. This is because when you give a single index to a matrix, it treats the matrix like a vector with the first column first, then the second column, etc (i.e., column-major order). It also makes sense that you don't get a matrix back since the "< 10" condition could be met anywhere any number of times in the matrix (i.e., no guarantee that the result would be square like a matrix).
     
-    You could also just slice rows based on columns (or vice versa). This is the kind of slicing we'll often do on a data table since we will want all rows (say, results from different experiments) whose column (say, factor in the experiment) matches a certain condition. For example, suppose we want to get all rows of the matrix `rmatx` with a fourth column whose roll is less than 10. We first slice the fourth column with `rmatx[,4]` and then compare it to 10,
-    ```{r}
-    rmatx
-    rmatx[,4] < 10
-    ```
-    Note that we get a vector of boolean values indicating whether the element in that row of the fourth column is less than 10. To get only those rows of the matrix `rmatx`, we then use this vector to slice the matrix:
-    ```{r}
-    rmatx[rmatx[,4] < 10,]
-    ```
+  You could also just slice rows based on columns (or vice versa). This is the kind of slicing we'll often do on a data table since we will want all rows (say, results from different experiments) whose column (say, factor in the experiment) matches a certain condition. For example, suppose we want to get all rows of the matrix `rmatx` with a fourth column whose roll is less than 10. We first slice the fourth column with `rmatx[,4]` and then compare it to 10,
+  ```{r}
+  rmatx
+  rmatx[,4] < 10
+  ```
+  Note that we get a vector of boolean values indicating whether the element in that row of the fourth column is less than 10. To get only those rows of the matrix `rmatx`, we then use this vector to slice the matrix:
+  ```{r}
+  rmatx[rmatx[,4] < 10,]
+  ```
 
 # Mapping and applying
 
@@ -182,31 +183,35 @@ where you have a small "anonymous" (unnamed) function here that gets a logical v
 
 # Lab ![](assets/beaker.png)
 
-Now let's slice some real **DATA**. We'll return to the COVID-19 data from the New York Times (<https://github.com/nytimes/covid-19-data>). Below we load the data and transform it from cumulative counts to daily counts of cases. Finally, we select case data for 2021 only, which is in the `us_cases_recent` data frame.
+Now let's slice some real **DATA**. We'll return to the COVID-19 data from the New York Times (<https://github.com/nytimes/covid-19-data>). Below we load the data and transform it from cumulative counts to daily counts of cases. Finally, we select case data for 2021 only.
 ```{r, message=FALSE}
 library(tidyverse)
 
 us = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
 
-us_cases_2021_wide = us %>% 
+us_cases_2021_wide = us %>%
   # make each state its own column
-  pivot_wider(c(date, state), names_from = state, values_from = cases) %>% 
+  pivot_wider(c(date), names_from = state, values_from = cases) %>% 
   # for each column subtract, subtract the previous day's case #
   mutate(across(where(is.numeric), ~ .x - lag(.x))) %>%
-  filter(date >= "2021-01-01")
+  # filter out only 2021 cases
+  filter(date >= "2021-01-01" & date <= "2021-12-31")
   
 us_cases_2021 = us_cases_2021_wide %>% 
   # put baack into tidy format
-  pivot_longer(-date, names_to = "state", values_to = "cases")
+  pivot_longer(-date, names_to = "state", values_to = "cases") %>%
+  # filter out rows with NA case
+  filter(!is.na(cases))
 ```
 You can get the first few rows with
 ```{r}
 head(us_cases_2021)
 ```
-or the last few rows with
+and compare it to the "wide" version
 ```{r}
-tail(us_cases_2021)
+head(us_cases_2021_wide)
 ```
+
 
 The data are saved as a `tibble`, which is really a fancy `data.frame`, which is a special kind of list that we will discuss in more detail next week. For the moment, you can practice slicing the data.frame as if it were a matrix. 
 
@@ -214,7 +219,7 @@ The data are saved as a `tibble`, which is really a fancy `data.frame`, which is
 
 Load the `.csv` file using the code above and show the R code in your `.Rmd` file for each of the following problems. You should be able to use a few lines of R code to obtain the answer directly (i.e., you shouldn't just scroll though the data table and give the answer by hand). Use the `us_cases_2021` and `us_cases_2021_wide `data frames; the "long" format data frame `us_cases_2021` may be easier to use in some problems whereas the `us_cases_2021_wide" may be easier to use in others.
 
-1. Which states have had more than 50,000 cases during one day in 2021?
+1. Which states have had more than 75,000 cases during one day in 2021?
 
 2. How many cases has Kentucky had during 2021? (hint: use the `sum` function)
 
