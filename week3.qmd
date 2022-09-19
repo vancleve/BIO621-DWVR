@@ -184,7 +184,7 @@ where you have a small "anonymous" (unnamed) function here that gets a logical v
 # Lab ![](assets/beaker.png)
 
 Now let's slice some real **DATA**. We'll return to the COVID-19 data from the New York Times (<https://github.com/nytimes/covid-19-data>). Below we load the data and transform it from cumulative counts to daily counts of cases. Finally, we select case data for 2021 only.
-```{r, message=FALSE}
+```{r}
 library(tidyverse)
 
 us = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
@@ -217,7 +217,7 @@ The data are saved as a `tibble`, which is really a fancy `data.frame`, which is
 
 ### Problems
 
-Load the `.csv` file using the code above and show the R code in your `.Rmd` file for each of the following problems. You should be able to use a few lines of R code to obtain the answer directly (i.e., you shouldn't just scroll though the data table and give the answer by hand). Use the `us_cases_2021` and `us_cases_2021_wide `data frames; the "long" format data frame `us_cases_2021` may be easier to use in some problems whereas the `us_cases_2021_wide" may be easier to use in others.
+Load the `.csv` file using the code above and show the R code in your `.qmd` file for each of the following problems. You should be able to use a few lines of R code to obtain the answer directly (i.e., you shouldn't just scroll though the data table and give the answer by hand). Use the `us_cases_2021` and `us_cases_2021_wide `data frames; the "long" format data frame `us_cases_2021` may be easier to use in some problems whereas the `us_cases_2021_wide" may be easier to use in others.
 
 1. Which states have had more than 75,000 cases during one day in 2021?
 

@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.189">
+<meta name="generator" content="quarto-1.1.251">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jeremy Van Cleve">
-<meta name="dcterms.date" content="2022-09-12">
+<meta name="dcterms.date" content="2022-09-19">
 
-<title>Vectors, slicing, and map(ping)</title>
+<title>Getting data into R with data.frames</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -2599,7 +2599,7 @@ vertical-align: -.125em;
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Vectors, slicing, and map(ping)</h1>
+<h1 class="title">Getting data into R with data.frames</h1>
 </div>
 
 
@@ -2616,7 +2616,7 @@ vertical-align: -.125em;
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 12, 2022</p>
+      <p class="date">September 19, 2022</p>
     </div>
   </div>
     
@@ -2628,433 +2628,398 @@ vertical-align: -.125em;
 <section id="outline-for-today" class="level1">
 <h1>Outline for today</h1>
 <ul>
-<li>Matrices and arrays</li>
-<li>Indexing and slicing</li>
-<li>Mapping and applying</li>
+<li>Another slice of slicing</li>
+<li>Names and attributes</li>
+<li>Factors</li>
+<li>Data frames: a special kind of list</li>
+<li>Reading data tables</li>
 </ul>
 </section>
-<section id="matrices-and-arrays" class="level1">
-<h1>Matrices and arrays</h1>
-<p>Previously, you have seen vectors, which are just lists of objects of a single type. However, you often want a matrix of objects of a single (or multiple!) types or even a higher dimensions group of objects. The two dimensional version of a vector is called a <strong><code>matrix</code></strong> and the <em>n</em>-dimensional version is called an <strong><code>array</code></strong>.</p>
-<p>You can think of a matrix as a vector,</p>
+<section id="another-slice-of-slicing" class="level1">
+<h1>Another slice of slicing</h1>
+<p>Last time, we covered much of the basics of slicing matrices but there are still some topics and some helper functions that will be useful to know when trying to accomplish certain tasks.</p>
+<section id="assigning-to-a-slice" class="level2">
+<h2 class="anchored" data-anchor-id="assigning-to-a-slice">Assigning to a slice</h2>
+<p>Not only can you extract a slice of a matrix to analyze or plot but you can also assign values to that slice. First, create a matrix of all zeros to manipulate:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>vec <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>vec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>allz <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="dv">6</span>, <span class="at">ncol =</span> <span class="dv">6</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>allz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16</code></pre>
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]    0    0    0    0    0    0
+[2,]    0    0    0    0    0    0
+[3,]    0    0    0    0    0    0
+[4,]    0    0    0    0    0    0
+[5,]    0    0    0    0    0    0
+[6,]    0    0    0    0    0    0</code></pre>
 </div>
 </div>
-<p>except you’ve specified that there are a certain number of rows and columns:</p>
+<p>As before, you slice the first row.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>matx <span class="ot">=</span> <span class="fu">matrix</span>(vec, <span class="at">nrow =</span> <span class="dv">4</span>, <span class="at">ncol =</span> <span class="dv">4</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>matx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>allz[<span class="dv">1</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>     [,1] [,2] [,3] [,4]
-[1,]    1    5    9   13
-[2,]    2    6   10   14
-[3,]    3    7   11   15
-[4,]    4    8   12   16</code></pre>
+<pre><code>[1] 0 0 0 0 0 0</code></pre>
 </div>
 </div>
-<p>Notice how the vector “filled” each column of the matrix. This is because R is a “column-major” language (Fortran, MATLAB, and Julia are other column-major langauges). Some languages, such as C and Python, and have row-major order.</p>
-<p>Since you often deal with matrices and matrix-like objects, R has two functions to give you the number of rows and columns. Also, the length of the matrix is just the rows times the columns.</p>
+<p>However, you can also assign values to it.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(matx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>allz[<span class="dv">1</span>,] <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>allz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 4</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ncol</span>(matx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 4</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(matx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 16</code></pre>
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]    1    2    3    4    5    6
+[2,]    0    0    0    0    0    0
+[3,]    0    0    0    0    0    0
+[4,]    0    0    0    0    0    0
+[5,]    0    0    0    0    0    0
+[6,]    0    0    0    0    0    0</code></pre>
 </div>
 </div>
-<p>Likewise, you can convert the vector to a 4x4 array:</p>
+<p>Note that when assigning to a slice, the right-hand side must be of the same dimensionality as the left-hand side. For example, the following will not work:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>arr <span class="ot">=</span> <span class="fu">array</span>(vec, <span class="at">dim =</span> <span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">4</span>))</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>arr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     [,1] [,2] [,3] [,4]
-[1,]    1    5    9   13
-[2,]    2    6   10   14
-[3,]    3    7   11   15
-[4,]    4    8   12   16</code></pre>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>allz[<span class="dv">1</span>,] <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<p>Two-dimensional arrays are exactly the same as matrices:</p>
+<p>The one exception to this rule is when the number of items on the right hand side is a multiple of the number of elements in the slice. The simplest example is</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(matx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>allz[<span class="dv">1</span>,] <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>allz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> int [1:4, 1:4] 1 2 3 4 5 6 7 8 9 10 ...</code></pre>
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]    1    1    1    1    1    1
+[2,]    0    0    0    0    0    0
+[3,]    0    0    0    0    0    0
+[4,]    0    0    0    0    0    0
+[5,]    0    0    0    0    0    0
+[6,]    0    0    0    0    0    0</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(arr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> int [1:4, 1:4] 1 2 3 4 5 6 7 8 9 10 ...</code></pre>
 </div>
-</div>
-<p>In the above, the <code>dim</code> argument specifies the dimensionality of the array. Thus, you can convert the vector to a multidimensional array of 2x2x2x2 as well:</p>
+<p>but you can also do</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>arr <span class="ot">=</span> <span class="fu">array</span>(vec, <span class="at">dim =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>))</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>arr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>allz[<span class="dv">1</span>,] <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>allz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>, , 1, 1
-
-     [,1] [,2]
-[1,]    1    3
-[2,]    2    4
-
-, , 2, 1
-
-     [,1] [,2]
-[1,]    5    7
-[2,]    6    8
-
-, , 1, 2
-
-     [,1] [,2]
-[1,]    9   11
-[2,]   10   12
-
-, , 2, 2
-
-     [,1] [,2]
-[1,]   13   15
-[2,]   14   16</code></pre>
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]    1    2    3    1    2    3
+[2,]    0    0    0    0    0    0
+[3,]    0    0    0    0    0    0
+[4,]    0    0    0    0    0    0
+[5,]    0    0    0    0    0    0
+[6,]    0    0    0    0    0    0</code></pre>
 </div>
 </div>
-<p>Note that this is a four-dimensional object, so you can’t print it without having to “flatten” it in some way.</p>
+<p>where the right hand side is use as many times as necessary to fill the slice.</p>
 </section>
-<section id="indexing-and-slicing" class="level1">
-<h1>Indexing and slicing</h1>
-<p>Indexing matrices works similarly to indexing vectors except that you give a list of the elements you want from each dimension. First, suppose that you roll a twenty-sided die 100 times (because you are a super nerd) and you collect the results in a 10x10 matrix:</p>
+<section id="sorting" class="level2">
+<h2 class="anchored" data-anchor-id="sorting">Sorting</h2>
+<p>Sorting numeric and character values is an important task that comes up in many applications. The <code>sort</code> function has reasonable defaults where it produces increasing numeric values</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>) <span class="co"># this gives us the same &quot;random&quot; matrix each time</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>rmatx <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, <span class="dv">100</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>), <span class="at">nrow =</span> <span class="dv">10</span>, <span class="at">ncol =</span> <span class="dv">10</span>)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>rmatx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>rvec <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="dv">20</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>rvec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
- [1,]   10    7   19    6    6   19   16    5   16     8
- [2,]    6    7    4   13   20   14   18   10    5    15
- [3,]   16   11    4    1   14   20    3    7   18    17
- [4,]   19   18   20    9   11   14    5   12    8    12
- [5,]   14   12   16    9   13    5   12    9    8     8
- [6,]   12    3    7    9   14   15   20   11    2    10
- [7,]    6   19   16   11    3   15   10   11   19     3
- [8,]    4    8   11    7   14    4   15    3   12     6
- [9,]    6   18   20    1    4   12   10    9    5    16
-[10,]    2    2    2    9   19   19   12   16   14     6</code></pre>
+<pre><code> [1] 74 89 78 23 86 70  4 55 70 98  7  7 55 43 82 61 12 99 51 72</code></pre>
 </div>
-</div>
-<p>To obtain the element in the second row, eighth column,</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>rmatx[<span class="dv">2</span>,<span class="dv">8</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(rvec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 10</code></pre>
+<pre><code> [1]  4  7  7 12 23 43 51 55 55 61 70 70 72 74 78 82 86 89 98 99</code></pre>
 </div>
 </div>
-<p>You can also get a <em>“slice”</em> of the matrix by using the colon operator:</p>
+<p>or character values</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>rmatx[<span class="dv">2</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>svec <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;hello&quot;</span>, <span class="st">&quot;world&quot;</span>, <span class="st">&quot;goodbye&quot;</span>, <span class="st">&quot;grand&quot;</span>, <span class="st">&quot;planet&quot;</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(svec, <span class="at">decreasing=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1]  6  7  4 13 20</code></pre>
+<pre><code>[1] &quot;world&quot;   &quot;planet&quot;  &quot;hello&quot;   &quot;grand&quot;   &quot;goodbye&quot;</code></pre>
 </div>
 </div>
-<p>yields the first five elements of the second row. Note that within the entry for the column element, you actually used a <strong>vector for the index</strong>. Thus, you can give any list of indices in any order you choose. For example,</p>
+<p>You can reverse the sort order by setting the argument <code>decreasing = TRUE</code>.</p>
+</section>
+<section id="getting-the-indices-from-slices" class="level2">
+<h2 class="anchored" data-anchor-id="getting-the-indices-from-slices">Getting the indices from slices</h2>
+<section id="sorting-1" class="level3">
+<h3 class="anchored" data-anchor-id="sorting-1">Sorting</h3>
+<p>Often, you will want to sort not only a vector by the rows of a data matrix based on some column of the matrix. Thus, you need the list of positions each row will go to (e.g., row 1 to row 10 because its 10th in the sorted order, etc). To obtain this, you can use the <code>order</code> function</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>rmatx[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">9</span>),<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">8</span>,<span class="dv">10</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>svec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>     [,1] [,2] [,3] [,4] [,5]
-[1,]    7    6   19    5    8
-[2,]   11    1   20    7   17
-[3,]   12    9    5    9    8
-[4,]   19   11   15   11    3
-[5,]   18    1   12    9   16</code></pre>
+<pre><code>[1] &quot;hello&quot;   &quot;world&quot;   &quot;goodbye&quot; &quot;grand&quot;   &quot;planet&quot; </code></pre>
 </div>
-</div>
-<p>returns a slice of the matrix with only the odd rows and even columns. You can keep all the elements in a specific dimension by just leaving that spot blank. For example, to get the fourth row,</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>rmatx[<span class="dv">4</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">order</span>(svec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 19 18 20  9 11 14  5 12  8 12</code></pre>
+<pre><code>[1] 3 4 1 5 2</code></pre>
 </div>
 </div>
-<p>In general, slicing an array involves giving a list of indices for each dimension of the array.<br>
-<strong>The magic of data wrangling and analysis with complex data comes in the many creative ways one can create these lists of indices and thus the slices that contain exactly the subset of the data that you want.</strong></p>
-<section id="slicing-lists" class="level2">
-<h2 class="anchored" data-anchor-id="slicing-lists">Slicing lists</h2>
-<p>Recall that lists are like vectors but with potentially multiple types of objects. Thus, they are a little bit more complicated to slice. Take the following list,</p>
+<p>which output precisely that list of indices. If you stick these indices back into the vector, you will obtain the original <code>sort</code> operation</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">list</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">4</span><span class="sc">:</span><span class="dv">6</span>, <span class="dv">7</span><span class="sc">:</span><span class="dv">9</span>)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>svec[ <span class="fu">order</span>(svec) ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[[1]]
-[1] 1 2 3
-
-[[2]]
-[1] 4 5 6
-
-[[3]]
-[1] 7 8 9</code></pre>
+<pre><code>[1] &quot;goodbye&quot; &quot;grand&quot;   &quot;hello&quot;   &quot;planet&quot;  &quot;world&quot;  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(svec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;goodbye&quot; &quot;grand&quot;   &quot;hello&quot;   &quot;planet&quot;  &quot;world&quot;  </code></pre>
 </div>
 </div>
-<p>which is a list of three vectors each three elements long. To get the first element of the list, you would do normally do</p>
+<p>You can also use the “sort order” of one column to order the rows of a whole matrix or data table. For example, using a matrix of random values,</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(x[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>rmatx <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, <span class="dv">36</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>), <span class="at">nrow =</span> <span class="dv">6</span>, <span class="at">ncol =</span> <span class="dv">6</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>rmatx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]   17   17   20    5    3    4
+[2,]    5   15   18   13    1    4
+[3,]    1    7   15    5   10   18
+[4,]   10    4    3   20   11   13
+[5,]    4    5    9    2   15    5
+[6,]   18   14    4    8    8    4</code></pre>
+</div>
+</div>
+<p>you could then sort the rows based on elements in the first column by first obtaining the indices used to sort that column</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">order</span>(rmatx[,<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3 5 2 4 1 6</code></pre>
+</div>
+</div>
+<p>and using the indices to order the rows</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>rmatx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]   17   17   20    5    3    4
+[2,]    5   15   18   13    1    4
+[3,]    1    7   15    5   10   18
+[4,]   10    4    3   20   11   13
+[5,]    4    5    9    2   15    5
+[6,]   18   14    4    8    8    4</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>rmatx[ <span class="fu">order</span>(rmatx[,<span class="dv">1</span>]), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]    1    7   15    5   10   18
+[2,]    4    5    9    2   15    5
+[3,]    5   15   18   13    1    4
+[4,]   10    4    3   20   11   13
+[5,]   17   17   20    5    3    4
+[6,]   18   14    4    8    8    4</code></pre>
+</div>
+</div>
+</section>
+<section id="boolean-logical-slicing" class="level3">
+<h3 class="anchored" data-anchor-id="boolean-logical-slicing">Boolean (logical) slicing</h3>
+<p>Recall that you can slice by creating a logical condition (generating <code>TRUE</code> and <code>FALSE</code> values) and use that in the index of a matrix. Sometimes, you want the actual indices of the elements of that matrix that are sliced; i.e., you want the indices of the elements where the conditions is <code>TRUE</code>. To get these indices, you use the <code>which</code> function. For example, the logical vector and slice are</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>rmatx[,<span class="dv">1</span>] <span class="sc">&gt;</span> <span class="dv">10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  TRUE FALSE FALSE FALSE FALSE  TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>rmatx[ rmatx[,<span class="dv">1</span>] <span class="sc">&gt;</span> <span class="dv">10</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]   17   17   20    5    3    4
+[2,]   18   14    4    8    8    4</code></pre>
+</div>
+</div>
+<p>You can slice the same way with <code>which</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>( rmatx[,<span class="dv">1</span>] <span class="sc">&gt;</span> <span class="dv">10</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1 6</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>rmatx[ <span class="fu">which</span>( rmatx[,<span class="dv">1</span>] <span class="sc">&gt;</span> <span class="dv">10</span> ), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]   17   17   20    5    3    4
+[2,]   18   14    4    8    8    4</code></pre>
+</div>
+</div>
+<p>Finally, there some special versions of the <code>which</code> function that give you the first index of the max or min element of a vector, <code>which.max</code> and <code>which.min</code>.</p>
+</section>
+</section>
+</section>
+<section id="names-and-attributes" class="level1">
+<h1>Names and attributes</h1>
+<p>We’ve talked about attributes and names before but there are some helpful functions for getting and setting the names associated with arrays and lists. You have already seen with lists how each element can be given a name.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>l <span class="ot">=</span> <span class="fu">list</span>(<span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="st">&quot;one hundred&quot;</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>named_svec <span class="ot">=</span> <span class="fu">c</span>(<span class="at">s1 =</span> <span class="st">&quot;hello&quot;</span>, <span class="at">s2 =</span> <span class="st">&quot;world&quot;</span>, <span class="at">s3 =</span> <span class="st">&quot;goodbye&quot;</span>, <span class="at">s4 =</span> <span class="st">&quot;grand&quot;</span>, <span class="at">s5 =</span> <span class="st">&quot;planet&quot;</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>named_svec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       s1        s2        s3        s4        s5 
+  &quot;hello&quot;   &quot;world&quot; &quot;goodbye&quot;   &quot;grand&quot;  &quot;planet&quot; </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(named_svec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Named chr [1:5] &quot;hello&quot; &quot;world&quot; &quot;goodbye&quot; &quot;grand&quot; &quot;planet&quot;
+ - attr(*, &quot;names&quot;)= chr [1:5] &quot;s1&quot; &quot;s2&quot; &quot;s3&quot; &quot;s4&quot; ...</code></pre>
+</div>
+</div>
+<p>You can recover those names with the <code>names</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(named_svec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;s1&quot; &quot;s2&quot; &quot;s3&quot; &quot;s4&quot; &quot;s5&quot;</code></pre>
+</div>
+</div>
+<p>You can also set the names afterwards by assigning to <code>names</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>svec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;hello&quot;   &quot;world&quot;   &quot;goodbye&quot; &quot;grand&quot;   &quot;planet&quot; </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(svec) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;s1&quot;</span>, <span class="st">&quot;s2&quot;</span>, <span class="st">&quot;s3&quot;</span>, <span class="st">&quot;s4&quot;</span>, <span class="st">&quot;s5&quot;</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>svec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       s1        s2        s3        s4        s5 
+  &quot;hello&quot;   &quot;world&quot; &quot;goodbye&quot;   &quot;grand&quot;  &quot;planet&quot; </code></pre>
+</div>
+</div>
+<p>Finally, you can return a version of the vector with the names stripped using the function <code>uname</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>unnamed_svec <span class="ot">=</span> <span class="fu">unname</span>(named_svec)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>unnamed_svec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;hello&quot;   &quot;world&quot;   &quot;goodbye&quot; &quot;grand&quot;   &quot;planet&quot; </code></pre>
+</div>
+</div>
+<p>though note that this hasn’t changed the original vector:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>named_svec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       s1        s2        s3        s4        s5 
+  &quot;hello&quot;   &quot;world&quot; &quot;goodbye&quot;   &quot;grand&quot;  &quot;planet&quot; </code></pre>
+</div>
+</div>
+<p>Finally, you can get rid of the names entirely by assigning <code>names</code> to <code>NULL</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(named_svec) <span class="ot">=</span> <span class="cn">NULL</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>named_svec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;hello&quot;   &quot;world&quot;   &quot;goodbye&quot; &quot;grand&quot;   &quot;planet&quot; </code></pre>
+</div>
+</div>
+<p>Just as reminder, while we can name elements of vectors, they still have to hold the same data type, unlike lists that can hold anything.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(<span class="fu">list</span>(<span class="at">a=</span><span class="dv">1</span>, <span class="at">b=</span><span class="st">&quot;two&quot;</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>List of 2
- $ : int [1:3] 1 2 3
- $ : int [1:3] 4 5 6</code></pre>
+ $ a: num 1
+ $ b: chr &quot;two&quot;</code></pre>
 </div>
-</div>
-<p>but (using the <code>str</code> function) you can see that actually returned the first vector as a list of length one. Thus, the single brackets simply return another list that contains the elements requested. You can give the single brackets a vector of indices, so its natural that you should get a list back. To get the component of the list itself, you must use double brackets:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(x[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(<span class="fu">c</span>(<span class="at">a=</span><span class="dv">1</span>, <span class="at">b=</span><span class="st">&quot;two&quot;</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> int [1:3] 1 2 3</code></pre>
-</div>
-</div>
-<p>This will be useful too when we’re dealing with <code>data.frame</code>s, which are basically just special lists. Another useful thing with lists (and other objects as we’ll see next week) is that you can name the elements with strings (that satisfy R objects naming rules!). This allows you to access elements of the list using the name instead of the index. For example, if</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">list</span>(<span class="at">a =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">b =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">c =</span> <span class="dv">7</span><span class="sc">:</span><span class="dv">9</span>)</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$a
-[1] 1 2 3
-
-$b
-[1] 4 5 6
-
-$c
-[1] 7 8 9</code></pre>
-</div>
-</div>
-<p>then we can access the first element using its name “a” and the “$” operator:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>a</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1 2 3</code></pre>
-</div>
-</div>
-<p>which is equivalent to</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>x[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1 2 3</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>x[[<span class="st">&quot;a&quot;</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1 2 3</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span><span class="st">&quot;a&quot;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1 2 3</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span><span class="st">`</span><span class="at">a</span><span class="st">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1 2 3</code></pre>
-</div>
-</div>
-<p>Any valid R name doesn’t need quotes for using the <code>$</code>, but you need them for fancy non-R friendly names:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">list</span>(<span class="st">`</span><span class="at">1 fancy name</span><span class="st">`</span><span class="ot">=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,  <span class="at">b =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">c =</span> <span class="dv">7</span><span class="sc">:</span><span class="dv">9</span>)</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span><span class="st">`</span><span class="at">1 fancy name</span><span class="st">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1 2 3</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>x[[<span class="st">&quot;1 fancy name&quot;</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1 2 3</code></pre>
+<pre><code> Named chr [1:2] &quot;1&quot; &quot;two&quot;
+ - attr(*, &quot;names&quot;)= chr [1:2] &quot;a&quot; &quot;b&quot;</code></pre>
 </div>
 </div>
 </section>
-<section id="other-ways-to-slice" class="level2">
-<h2 class="anchored" data-anchor-id="other-ways-to-slice">Other ways to slice</h2>
-<ul>
-<li><p>Negative integers omit the specified positions:</p>
+<section id="factors" class="level1">
+<h1>Factors</h1>
+<p>A special object that you will see when dealing with data frames is called a “factor”. A factor is a vector that can contain only predefined values and essentially stores categorical data (e.g., “tall”, “medium”, and “short” for plant height). Factors have a “levels” attribute that lists the allowable values. For example</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>rmatx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>fac_factor <span class="ot">=</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">&quot;Famulski&quot;</span>, <span class="st">&quot;Burger&quot;</span>, <span class="st">&quot;Seifert&quot;</span>, <span class="st">&quot;Santollo&quot;</span>, <span class="st">&quot;Duncan&quot;</span>, <span class="st">&quot;Schneider&quot;</span>))</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>fac_factor</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
- [1,]   10    7   19    6    6   19   16    5   16     8
- [2,]    6    7    4   13   20   14   18   10    5    15
- [3,]   16   11    4    1   14   20    3    7   18    17
- [4,]   19   18   20    9   11   14    5   12    8    12
- [5,]   14   12   16    9   13    5   12    9    8     8
- [6,]   12    3    7    9   14   15   20   11    2    10
- [7,]    6   19   16   11    3   15   10   11   19     3
- [8,]    4    8   11    7   14    4   15    3   12     6
- [9,]    6   18   20    1    4   12   10    9    5    16
-[10,]    2    2    2    9   19   19   12   16   14     6</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>rmatx[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">9</span>),<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">8</span>,<span class="dv">10</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     [,1] [,2] [,3] [,4] [,5]
-[1,]    7   13   14   10   15
-[2,]   18    9   14   12   12
-[3,]    3    9   15   11   10
-[4,]    8    7    4    3    6
-[5,]    2    9   19   16    6</code></pre>
+<pre><code>[1] Famulski  Burger    Seifert   Santollo  Duncan    Schneider
+Levels: Burger Duncan Famulski Santollo Schneider Seifert</code></pre>
 </div>
 </div>
-<p>gives the even rows and even columns.</p></li>
-<li><p>Logical vectors selects elements of the matrix where the index vector is TRUE.<br>
-<strong>This is one of the most useful ways to index.</strong><br>
-If you want to get only the rolls of the die that were less than 10, then you create a matrix of logicals</p>
+<p>If you try to set an element of the factor object to a value outside of <code>levels</code>, you will receive a warning</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>rmatx <span class="sc">&lt;</span> <span class="dv">10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       [,1]  [,2]  [,3]  [,4]  [,5]  [,6]  [,7]  [,8]  [,9] [,10]
- [1,] FALSE  TRUE FALSE  TRUE  TRUE FALSE FALSE  TRUE FALSE  TRUE
- [2,]  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE
- [3,] FALSE FALSE  TRUE  TRUE FALSE FALSE  TRUE  TRUE FALSE FALSE
- [4,] FALSE FALSE FALSE  TRUE FALSE FALSE  TRUE FALSE  TRUE FALSE
- [5,] FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE
- [6,] FALSE  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE  TRUE FALSE
- [7,]  TRUE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE  TRUE
- [8,]  TRUE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE
- [9,]  TRUE FALSE FALSE  TRUE  TRUE FALSE FALSE  TRUE  TRUE FALSE
-[10,]  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE</code></pre>
-</div>
-</div>
-<p>and use it to index the matrix:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>rmatx[rmatx <span class="sc">&lt;</span> <span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] 6 6 4 6 2 7 7 3 8 2 4 4 7 2 6 1 9 9 9 7 1 9 6 3 4 5 4 3 5 5 7 9 3 9 5 8 8 2
-[39] 5 8 8 3 6 6</code></pre>
-</div>
-</div>
-<p>Notice here that you get a vector back, not a matrix. This is because when you give a single index to a matrix, it treats the matrix like a vector with the first column first, then the second column, etc (i.e., column-major order). It also makes sense that you don’t get a matrix back since the “&lt; 10” condition could be met anywhere any number of times in the matrix (i.e., no guarantee that the result would be square like a matrix).</p>
-<p>You could also just slice rows based on columns (or vice versa). This is the kind of slicing we’ll often do on a data table since we will want all rows (say, results from different experiments) whose column (say, factor in the experiment) matches a certain condition. For example, suppose we want to get all rows of the matrix <code>rmatx</code> with a fourth column whose roll is less than 10. We first slice the fourth column with <code>rmatx[,4]</code> and then compare it to 10,</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>rmatx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
- [1,]   10    7   19    6    6   19   16    5   16     8
- [2,]    6    7    4   13   20   14   18   10    5    15
- [3,]   16   11    4    1   14   20    3    7   18    17
- [4,]   19   18   20    9   11   14    5   12    8    12
- [5,]   14   12   16    9   13    5   12    9    8     8
- [6,]   12    3    7    9   14   15   20   11    2    10
- [7,]    6   19   16   11    3   15   10   11   19     3
- [8,]    4    8   11    7   14    4   15    3   12     6
- [9,]    6   18   20    1    4   12   10    9    5    16
-[10,]    2    2    2    9   19   19   12   16   14     6</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>rmatx[,<span class="dv">4</span>] <span class="sc">&lt;</span> <span class="dv">10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE</code></pre>
-</div>
-</div>
-<p>Note that we get a vector of boolean values indicating whether the element in that row of the fourth column is less than 10. To get only those rows of the matrix <code>rmatx</code>, we then use this vector to slice the matrix:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>rmatx[rmatx[,<span class="dv">4</span>] <span class="sc">&lt;</span> <span class="dv">10</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-[1,]   10    7   19    6    6   19   16    5   16     8
-[2,]   16   11    4    1   14   20    3    7   18    17
-[3,]   19   18   20    9   11   14    5   12    8    12
-[4,]   14   12   16    9   13    5   12    9    8     8
-[5,]   12    3    7    9   14   15   20   11    2    10
-[6,]    4    8   11    7   14    4   15    3   12     6
-[7,]    6   18   20    1    4   12   10    9    5    16
-[8,]    2    2    2    9   19   19   12   16   14     6</code></pre>
-</div>
-</div></li>
-</ul>
-</section>
-</section>
-<section id="mapping-and-applying" class="level1">
-<h1>Mapping and applying</h1>
-<p>Given that you can slice matrices now, you will at some point want to apply some function to each element of that slice or to each row or column of the matrix. This can be done with a <code>for</code> loop, but there are functions that simply this. Such functions are <code>apply</code> functions in R and <code>map</code> functions in Python and Mathematica.</p>
-<p>In R, there are actually many <code>apply</code> functions since there are different types of list objects. To see them all, you type</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>??base<span class="sc">::</span>apply</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>which searches for all functions with “apply” in the description in the “base” package.</p>
-<p>If you have a list, the easiest apply function is <code>sapply</code>, which applies a function to each element of a vector or list and returns the output as a vector or matrix if possible. For example, you could sum each vector in the list you created above using the <code>sum</code> function.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$`1 fancy name`
-[1] 1 2 3
-
-$b
-[1] 4 5 6
-
-$c
-[1] 7 8 9</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(x, sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>1 fancy name            b            c 
-           6           15           24 </code></pre>
-</div>
-</div>
-<p>Note that <code>sapply</code> gave you back a vector but with each element named according to the names of the list elements (handy!).</p>
-<p>If you want to use apply over a matrix, the <code>apply</code> function is required. To add all the elements in each row (dimension 1) or column (dimension 2) of the matrix <code>matx</code>, you can try</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>matx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     [,1] [,2] [,3] [,4]
-[1,]    1    5    9   13
-[2,]    2    6   10   14
-[3,]    3    7   11   15
-[4,]    4    8   12   16</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(matx, <span class="dv">1</span>, sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 28 32 36 40</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(matx, <span class="dv">2</span>, sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 10 26 42 58</code></pre>
-</div>
-</div>
-<p>However, you can do more complicated things by making custom functions and “applying” them. For example, in order to get the number of die rolls less than 10 in each column of your die roll matrix, you could try</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>rmatx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
- [1,]   10    7   19    6    6   19   16    5   16     8
- [2,]    6    7    4   13   20   14   18   10    5    15
- [3,]   16   11    4    1   14   20    3    7   18    17
- [4,]   19   18   20    9   11   14    5   12    8    12
- [5,]   14   12   16    9   13    5   12    9    8     8
- [6,]   12    3    7    9   14   15   20   11    2    10
- [7,]    6   19   16   11    3   15   10   11   19     3
- [8,]    4    8   11    7   14    4   15    3   12     6
- [9,]    6   18   20    1    4   12   10    9    5    16
-[10,]    2    2    2    9   19   19   12   16   14     6</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(rmatx, <span class="dv">1</span>, <span class="cf">function</span>(x) <span class="fu">sum</span>(x <span class="sc">&lt;</span> <span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] 5 4 4 3 5 4 3 6 5 5</code></pre>
-</div>
-</div>
-<p>where you have a small “anonymous” (unnamed) function here that gets a logical vector for each row, TRUE for &gt; 10 and FALSE for &lt;= 10, and sums that vector (TRUE = 1 and FALSE = 0).</p>
-</section>
-<section id="lab" class="level1">
-<h1>Lab <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFIAAABkCAYAAAAVD2crAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAVlpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KTMInWQAAExdJREFUeAHtXQu0TmUa3o5biRTd5ZpLxrQaUVZMF11msmiUwZpFq2FEo6WRDMXUZNZSU2pJNbG0kkaUSYmsEFGWxiULuZSohoQkISo65zh7nuf9v2fb+zi3f5/z/5zT/6717e/yf5f3ffb7fd+7v+/b+6/kpYcqo5mjcNfAPV+jRo2m55xzjl8JVJbN+6Ddu3dXOnLkyBbU+ye4/8Kp7bJs6oTUleVabQHfP/XUU334BJV+KtzR6tWrs94cuCZwJPGQiKXgWiUFdeavkkLkwY2EJno//vjjkcsuu+yUAQMGeBDYy8vL80qrmFBELysryzt8+LD31FNPZW3evPnIKSBo5nC0+2c48YBg+SV133WNGjWipuR+8MEH7IUpoSVLllgbTZo0ob/SwSYeUoZiOjSSApGyfvrpJwucd9555h89erTU2mgV4ULNrlKlinfuuecGdSPA8TEtlA4gqQ0EM69q1aomFAEksTsm262hxkGZcFj1qO7KlQ3DREOeJx6s3VRcUj4Ig2lpxcKcHI7/Xt5LL73kbd++3bQoGaHCwLEcwWMaiRq5bds2b9q0aRb94Ycf6C/gBZQOORMtpfCq8aka2ph3/vnnU/Kj0EYfwgIH3wcI5hd1UR6WGTVqlH/nnXf633zzTVDk4MGDrNfqRvemPxtON1E8IKl8kw0hmKWbOfMnr1OnTkkBiS5roK1Zs0aA+XPnzo0AedVVV9E68KtVq0Yzq4GDTGCmFMF0qTwF9DDZ1OKEQIJpYn6yF42FLBcOMw7Tip5NOjCFalokoaUumDovXUCqa2nwT51Ex2q2m3csmtpQuoBMiRTo1/nr1Q3Ln57yeLkGsgB0jkO2gDwpSapoQGY0MiVqksZKK5pGphG6aFMZIKN4xI5lgIwNXbRgBsgoHrFjGSBjQxctmAEyikfsWAbI2NBFC2aAjOIRO5YBMjZ00YIZIKN4xI5lgIwNXbRgBsgoHrFjGSBjQxctmAEyikfsWAbI2NBFC2aAjOIRO5YBMjZ00YIZIKN4xI5VNCAzm1+xVSFaMLP5FcWj8Fj4dEU47Er8bDSy1BqTm5sboBwOB4nHAqVu61hVxYfSNUZKU+xcX/FsHZ9D2odD/MGP9evXD8IFBGK3VUBdxSal46ApmeCJMJ7F6eQA4bG+pNpmOR5RIXg8B8nTv82bN7c0gYzDpdTCXMRZ92/hPoNT2wimjpISJiYbFI7aURtuhDtRa8egCzi7U2QTArNhw4bH5WNd7nBplmvjAWSaDMcjauRBvQLBsqd0dG3drL+C/To4t0hQs3Aw395qoEjSKIaLI4HJE7oklUW93qWXXsqkrJo1a7INHlQfwgSQeEjEyuFVN6oeeD8M5zdt2pQI+MuXL4cS+b4OkFok5kV1sM5wGwgfhNOgKl6QVP5ImjAJrPs4kpxNn8eWdZRZfkwMrZjqoM+6w20h/C84UuJNgES4XF115PhX4JrC5Ukb165dawBIk0oDosqqLtbN9i666CLTfNd2S/gk8ZSIlZOrmJ4Lfv0LLriA45Y/bNiwiBYJiNL61EZpJtsIt4nwTDiSekgiVg6uYpgmCIXKxUxrwuH1NsNMGlQWAKouGOhWHdtgu65NWvCMXwNH0g1OxE7yK80N0ho4CmTCPProoyaoNKc0IIY1sKB6HnvsMYEpIJcZR+XonRsN6n1hmvgwvLP5SjEB/fLLL01maVBBAJQkLVweLz75eAHKHzp0qP/ss8/63377rVXxxRdfWJtsGzzkkBfw8AcHpnqMi558njSxOljbDufj5Uq+yeA/99xzpQYxDOCBAwesTtYddrfccot/6NAha2vixIn2m3hAvs/g1LXFK5JOPpI2PkANwItD2U4T/L179wZAJtO1mTcMIMfBhQsXclY2kPgmGcPUvDZt2ljaCy+8YG3t2bMnADnEy1AHm3g96VCUwcvXUw/BBcb3q6++aoJpMrAILgSITuOdfKWHAWSZDz/80O/bt28AjsBkW24Y8c8++2z7fefOndbM9OnTLQ7Ty3oG8u6DqwNHOim1Und4AoXCY5oZ323btg26GiWjZnL8Kinx3cOVK1f699xzTwAgFiv80047zeLSeIBi8caNG5v/zDPPWBPfffedf/nll1saeXL5xxqMJ6GRrnGnlRMoD8KaQfz222+bQNLGhx56yIQaPny4/9prr/l8t5DA8gXNffv28ZsU/qeffurzBfann37av/rqqy0/6+XL7Jq48gMoIJmO98GtzNatW63tefPmWVw8IS+1sykcST0pETvBV82Cs8CHX6dOHTO+b731Vh/LXYGh/NFHH5lAzZo1C8BhfrnTTz89CCuNPruwwAmnFxZ29qMvcwvvPfrdunWzusUbyk6HI4n3ROwEXsVIR/BAZnMF1LJly0wjNNbdfffdJgyecgwYAkQtI0h87Zjl2WWx5mjgEZBatWpZuqu7xOEGDRpYXj0AvP/++xZ3vGm8bI96SepRidgJuqpr8PsRXJgwA3jgwIGmiQJxxYoVYUEigLA74usC9nowFmcjv7HOOO7CCy+0cg8++GBwM8mT49F6DMJL4EiSIRE7AVdpY2+0TSZzqGEMr1+/3gTgTJydne13797d0uvWrWu+yx8rTC2lFuOV5SLLa+IRL5z12a7jUWB2QxpJsiRiabzKdCAD/4PzoQXWZaQFmmAWLFhgAnC2Zb44TpNLeKwkoJiJC63Pfa3AZny7q7iQN8erHh03IS6STIqnxZe5MwytkblsdafPP/9cfJvpc8UVVxjzFFyAuDKFglDQ72eddZblb9++fcQcKgpM2I9WZtWqVcYTLQLW7Xg1Ew3xQXAkyZSIpeGqO1cXbR2A87F1YObOk08+aQzjQyDm0xjn75qAGI7jZPZwwuL3K0iyAnhz+PmFgupVuX79+vniiTwyL3jWpLMH8dPhSJItEUvxVXduHIXABJF9xhlnGHO7du0yIXmh8Q0+TAspaGm0UZq1evVqq5/jLmnMmDHWhmZptpff6SZy5ibt2LHD8pBn8u74+qfDTLK5aMm8OLMVy3Cgbg73F/Dl4c5WwSKC9+KLL3oYlzyMjdb666+/bj4GfQ+CB5+WYSLMHa927doeN61KQpi0LBsMdvP1DSGsKFlcH2cqqC6sCFnyuHHjbBu3Xr16xit5Ju+UAcRn8IZwlC0OLiiWHGl2m8E7iU+Q2ezHSWD//v284UZc3kK1NIdME5lXGslJIDxpcHal+cP8hTm0Y79Rs999912f9U+YMMHSwnUVVl5a+c477xh/XG4DoFYedUsrp6A8STImYim4ynD9NeomE4HxPWvWLGNQM/UjjzxiTKrLCUQa466s36VLF//iiy+2uOxI/VaQ777CF5RnnjPPPDMSL6gc24b2W74bbrjB//77743XN954w9LyGeltUQdJsiZiZXyVyi8lc3ikM2289tprfXwqxpjj5ZNPPjEG0W0iQkoDuADB52s+unHi4Pd7wCfHq2I1E0MBJwmfN4hPQCxXUietnDNnjvHKdcvrrrvOygNoLf4udJilDEipew/HeI7swsWLFxtjeoq59957jbmw9uEZ19L4zItv8lj+8IWLG6w3P/glBam4fLzxWjHCQQKfC8Mk8s6yThZTDMS7wJEkcyJWBleZBPQ3w/mw6cyg7d27t5kVfIIh0V7j75plGabT2iFXYkgyRQQ+Nbpjx44+n3xatGhh+WVQq46y8MWX1ki5qHLbbbcZj5IJ7ayHSwnJJBiM2tlothiSoUsgCU6vXr3ElPkufwAkn7lJAtAiuHBsvemmmyJlWJaGs0wrjbOqM1mf5TXO4qOgwbfV+D1L1uVkkpE+AGkkyZ6IleIqbeQhqL1wPjTFDNkhQ4YYDgJl0aJFxpC6PPPKqctqG4DAsZwmJ9p2999/v42XS5cu9d966y2Lq7z7cFxQn9Lj+OodMNeMfyqBhiPJhnp3wdWAIwmDRCzmVXdkDMpTkGyBsmnTJimUfTAOH3kzQbmumF97OCvLhPn444+Dcgpw4NfwoDT6GzZs8DmmsW1tIzg+YoFKvrjYoeU5PUDoKcnJJq38B9oiCYNELMZVs3RjlLWBGLOlPQqOHj3a5JVGzZw50wTTzIj8xwkq5vnbyy+/bHswPPgUnnyopXICltu4qo+ztsKl8Wm7svz48eOD+/bwww9bmmTE7zwSWA+OJCwSsSSvmrWm8U7CZWsCCO+70LiVgByD8msj2gyEp7ZqEZfpb775pgmi4SGQygU0Kc2fP9/qULcM1xknTB41XEiWrdiaYF008Cmrk+N5pJGERSKWxFV2VDuUYQNH899FaeOkSZOSEpLGMbtphw4dAuNY2pcfSKVzP0caXdgChePTeClJWFsSjz/+eNCsnpYgK3ue9T74dvASvjBBsOSkQot5ZzDG5WiM436xSAsAXOKiprm7WKQw0oTBgwermmJ9aiw+uW31lsVYCRisLhn1XF4jcfONv7FnUWYnDw+CkYRJIha6FtbvqcacmbvCdUT9PARVhR/PfOWVVzwI4kEwq4ZxEoxd+84t8lq8qAuYs5/xJFNUtshvLAPBLI0LHmVF4nfq1KlWJW6yychFEMqM3yloJ7jfwDEcq4tv5B0BSGZ8t2rVyuc+sWjLli1299RF0IjFi/PVRa+//vrg0VJdWHXLVzpndc3etAGLayOZ3zVkbdy40ZrlU88ll1xibVB2p5WrUSepxKaQpvqBKMTKsjUT65u2Ghu5N808eoZ2+UskpJjX+qLqFIDyNdlwR5L1a08ombaKy6sJlLakbpye/51NLHOoD+oiFauVQpvfp93NO4HVFaqz37lzZ1tkkID6aLCecJgnGadNsK5duwYfLSaYMn3oC1wubPDxkfXrKSeZtkqSV9aAbiwfWW+++WZrkxg4rdyOunhAjCSsErF8V2njaKSzkkAb+bRBkoB9+vSxRkoz8Gug5zapDlnpRsnn4K+24mi+k8N4LSqsLYn+/fsH6wCUmWVcj5RW/g1pJGGViIWuGsHrI42fZObxEJv+77jjjkBTKOB7771nDRT0KMhyJXHuDttyGPPTDp0yZYq/bt06n/Yct04nT54c1CXQVa4kbSSbR0OYDjZwWCGwrEdYIMwDYjwoRhJmiZi7qt9PRpyFs6XuFEpElb/xxhutctqDpRFMZcPLba5tq19hjWHKr/Sy9jXc9OzZMxjGtBfusJBWjkfbpOO0UnZIa/xIIfLQjUwbR4wYYRhqvOKTCPPo7rn8EcHjpFEjOQHREVhOKgxrtSZOnXHKSC6tsVL4kSNHmnwOExnpv0D9JGEXicxHjIVytEUgQ5UVck9GXYyCp1pDHC+lvkklrYfyaEuCvU5bEtoLd5ho8ZcHxkjqyUGARieZDt5AeOKJJ4hfMHvCaDWh4s7Urv60ARO3PY39WoQmBsSC9Tmb2exqxDvCkQxMTeNrkcB9k1xtKPHxT0QTRAZxRdRGyk5HrZT8PK/EfSWSHoX5GzFy+VfAJwWTTj9EWFG2urROTGhs5EEk5kmFQezatvpPlrBwCA9tPPhK/pxWqov3QpohSQPz74yAKutPKWAAWwJuhvlYqDAfd8z8in7Rcz00MRAVW7lhDATEKCTa039PBBrA5aBwFtbmEMRqJk4jkAScALbEn9GFJ0RE0FLvyiuvtBfv8QzO2ZpdvBnc79m3fwdHqoR1PlvVadeunYcls0Si00DM1hbHs2gk3SIV8KIVJjySBnLzX/TwD3oWxwm4sNRdCWRLl1IJ46EF8WpFcH5HGomx0Rs0aJCHpw4PxmnkEwjhGitCGCaQh7HRw168h61hE4k40KnLO1zUvX/JTNvgOBDa4oQbSO20BGcrLSIwzCV5l1cb6kFc6eXd58NAy5YtTS4ekCURAxJncC7eUEZnbxpmiG+l/bMfriF/hAto0aJFwd2gmrNLc4zAbpuHdUkPa5F28owLumgoGEuDCspZgDJyPMThLA87i96MGTM8GOUmBTA0n/MHtokNB+YDCbODjPzbJdh0jgqDTSG9ESATSHeGWw189cKVq1D+XXfdZVvApoK4SGbG77vvPpM1tDYgE2ga+3gXuDlwHCDNQufYgM0mr3Xr1nYHsGgQ+es9DcS8c9ij9r7++uvI2UfUU66I4x23T/Cc7eH53nhnLyNpO4R/QXj77bd7jRo1slnbfkxsUXPhoruLe6sQINpC2BYOmMZVDy5thYl3KXynwr+V9zBXyLVKTlm4xTF27FjTRM0fAD6M1QaBSL8NQXNOexQ8mqI0n1uWtPJ15Li8A1YU/xzKvvrqK3/27Nk+eqVhkO+JjuqqVaAOCNtyObszu3VvuKlwJG5DVkVjdjyZ5oAbXL0ePXqYLUU7k79XJGIX5+4hJ1KcUQpEy9edgyEQGfrDPQ9nQyILKMA37KWF7OZ0NsVz+UxLaKE8ylvhfJo3HNbcqyfcsxEekvWPwIFk2HGyETGBaPMN14lwHeCOI6x+eLTqefcqIrGX8X+6sfYa7N3nk3M54txhXQcnzPJlOaaZ/KEz3H/gdsJpPNDd+Dn5lH0HHN+mJSYi00RF/g/FvkLtXVJVZwAAAABJRU5ErkJggg==" class="img-fluid"></h1>
-<p>Now let’s slice some real <strong>DATA</strong>. We’ll return to the COVID-19 data from the New York Times (<a href="https://github.com/nytimes/covid-19-data" class="uri">https://github.com/nytimes/covid-19-data</a>). Below we load the data and transform it from cumulative counts to daily counts of cases. Finally, we select case data for 2021 only.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>fac_factor[<span class="dv">1</span>] <span class="ot">=</span> <span class="st">&quot;Van Cleve&quot;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
-✔ ggplot2 3.3.6      ✔ purrr   0.3.4 
-✔ tibble  3.1.8      ✔ dplyr   1.0.10
-✔ tidyr   1.2.1      ✔ stringr 1.4.1 
-✔ readr   2.1.2      ✔ forcats 0.5.2 
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre><code>Warning in `[&lt;-.factor`(`*tmp*`, 1, value = &quot;Van Cleve&quot;): invalid factor level,
+NA generated</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>fac_factor</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &lt;NA&gt;      Burger    Seifert   Santollo  Duncan    Schneider
+Levels: Burger Duncan Famulski Santollo Schneider Seifert</code></pre>
+</div>
+</div>
+<p>and the element will be converted to the <code>NA</code> value, which is used for missing data.</p>
+<p>Many R functions that read data tables take advantage of this behavior of factors so that columns may only contain certain values and the other values are missing data. This occurs when the function runs into a column with string data and the R function will often convert that column to a factor. Some of the functions that read data tables have nice arguments that let you tell them that specific strings, say “-”, represent missing data and should be be converted to <code>NA</code>.</p>
+<p>While useful, factors are extremely annoying when your data are converted to them when you don’t expect it as further changes to the data table may result in <code>NA</code> values when you really wanted to add a new string value. This <a href="https://peerj.com/preprints/3163/">paper</a> gives a good history of why factors are useful in R. It mostly comes down to factors being useful for categorical variables in regression models.</p>
+</section>
+<section id="data-frames" class="level1">
+<h1>Data frames</h1>
+<p>Finally we have reached data frames. Data frames are the <strong>most common way of storing data in R</strong>. Essentially, a data frame is a list object containing vectors of equal length (i.e., the number of rows of the table). Put another way, a data frame is a <code>list</code> version of a matrix. Thus, data frames have properties such as <code>length()</code>, <code>rnow()</code>, <code>ncol()</code> <code>colnames()</code>, and <code>rownames()</code>.</p>
+<p>Creating a data frame is like creating a list where you name your elements, which here are columns (data not guaranteed to be accurate…):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>dframe <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">height_rank =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">last_name =</span> <span class="fu">c</span>(<span class="st">&quot;Van Cleve&quot;</span>, <span class="st">&quot;Linnen&quot;</span>, <span class="st">&quot;Seifert&quot;</span>, <span class="st">&quot;Pendergast&quot;</span>), <span class="at">first_name =</span> <span class="fu">c</span>(<span class="st">&quot;Jeremy&quot;</span>, <span class="st">&quot;Catherine&quot;</span>, <span class="st">&quot;Ashley&quot;</span>, <span class="st">&quot;Julie&quot;</span>))</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>dframe</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  height_rank  last_name first_name
+1           1  Van Cleve     Jeremy
+2           2     Linnen  Catherine
+3           3    Seifert     Ashley
+4           4 Pendergast      Julie</code></pre>
+</div>
+</div>
+<p>Slicing a data frame works like slicing a matrix or a list. Often, we will use the list convention where columns can be obtained with <code>$</code>. For example,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>dframe<span class="sc">$</span>first_name</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;Jeremy&quot;    &quot;Catherine&quot; &quot;Ashley&quot;    &quot;Julie&quot;    </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>dframe<span class="sc">$</span>last_name</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;Van Cleve&quot;  &quot;Linnen&quot;     &quot;Seifert&quot;    &quot;Pendergast&quot;</code></pre>
+</div>
+</div>
+<p>Adding columns to a data frame is done with <code>cbind</code> (“column bind”), which glues together columns,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(dframe, <span class="at">building =</span> <span class="fu">c</span>(<span class="st">&quot;THM&quot;</span>, <span class="st">&quot;THM&quot;</span>, <span class="st">&quot;THM&quot;</span>, <span class="st">&quot;THM&quot;</span>), <span class="at">floor =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  height_rank  last_name first_name building floor
+1           1  Van Cleve     Jeremy      THM     2
+2           2     Linnen  Catherine      THM     2
+3           3    Seifert     Ashley      THM     2
+4           4 Pendergast      Julie      THM     3</code></pre>
+</div>
+</div>
+<p>and adding rows with <code>rbind</code> (“row bind”), which glues together rows,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(dframe, <span class="fu">data.frame</span>(<span class="at">height_rank =</span> <span class="dv">0</span>, <span class="at">last_name =</span> <span class="st">&quot;Smith&quot;</span>, <span class="at">first_name =</span> <span class="st">&quot;Jeramiah&quot;</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  height_rank  last_name first_name
+1           1  Van Cleve     Jeremy
+2           2     Linnen  Catherine
+3           3    Seifert     Ashley
+4           4 Pendergast      Julie
+5           0      Smith   Jeramiah</code></pre>
+</div>
+</div>
+<p>Again, note that each of these commands returned a <strong>new</strong> <code>data.frame</code> and the original is unchanged until we explicitly save back to that variable name:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>dframe</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  height_rank  last_name first_name
+1           1  Van Cleve     Jeremy
+2           2     Linnen  Catherine
+3           3    Seifert     Ashley
+4           4 Pendergast      Julie</code></pre>
+</div>
+</div>
+<p>Functions like <code>cbind</code>, <code>rbind</code>, and others that do operations on arrays and data frames usually create a copy of the data and return the modified copy. This is <strong><em>usually</em></strong> what you want since you’re not modifying your original variable/data until you explicitly assign the old variable to the new data. One case where you might not want to do this is when your data are so big (e.g., whole genomes, billions of tweets) that they take up a large fraction of the computer’s RAM, in which case you have to be very careful about creating copies of your data.</p>
+</section>
+<section id="reading-data-tables" class="level1">
+<h1>Reading data tables</h1>
+<p>Now that you know about data frames, you can start using some nice R functions to read in data. We have already seen this when loading data for the homeworks. As in those examples, we load the a few packages before loading the data since they are nice for reading csv and excel files. You probably don’t have the <code>readxl</code> package yet, which you can install with:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;readxl&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then load:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># loads the `readr` package that loads things like csv files</span></span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl) <span class="co"># package for reading Excel files</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, you can use the <code>read_csv</code> function to get the COVID-19 data table from the NY Times.</p>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>us <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Rows: 51134 Columns: 5
+<pre><code>Rows: 51526 Columns: 5
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: &quot;,&quot;
 chr  (2): state, fips
@@ -3064,68 +3029,108 @@ date (1): date
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>us_cases_2021_wide <span class="ot">=</span> us <span class="sc">%&gt;%</span></span>
-<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># make each state its own column</span></span>
-<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="fu">c</span>(date), <span class="at">names_from =</span> state, <span class="at">values_from =</span> cases) <span class="sc">%&gt;%</span> </span>
-<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># for each column subtract, subtract the previous day&#39;s case #</span></span>
-<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> .x <span class="sc">-</span> <span class="fu">lag</span>(.x))) <span class="sc">%&gt;%</span></span>
-<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter out only 2021 cases</span></span>
-<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;=</span> <span class="st">&quot;2021-01-01&quot;</span> <span class="sc">&amp;</span> date <span class="sc">&lt;=</span> <span class="st">&quot;2021-12-31&quot;</span>)</span>
-<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb84-9"><a href="#cb84-9" aria-hidden="true" tabindex="-1"></a>us_cases_2021 <span class="ot">=</span> us_cases_2021_wide <span class="sc">%&gt;%</span> </span>
-<span id="cb84-10"><a href="#cb84-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># put baack into tidy format</span></span>
-<span id="cb84-11"><a href="#cb84-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>date, <span class="at">names_to =</span> <span class="st">&quot;state&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;cases&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb84-12"><a href="#cb84-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter out rows with NA case</span></span>
-<span id="cb84-13"><a href="#cb84-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(cases))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>You can get the first few rows with</p>
+<p>Notice that <code>read_csv</code> gives you some nice output telling us about the table you just read. This function and others like it (i.e., from the <code>readr</code> and <code>readxl</code> packages) do a lot for you automatically and have many nice features, some of which we’ll cover later.</p>
+<p>Loading excel files in no harder. We’ll load some data from a RNA-seq paper on genomic imprinting (Babak et al. 2015. Nat Gen, <a href="http://dx.doi.org/10.1038/ng.3274" class="uri">http://dx.doi.org/10.1038/ng.3274</a>), <a href="https://github.com/vancleve/BIO621-DWVR/raw/main/babak-etal-2015_imprinted-mouse.xlsx"><code>babak-etal-2015_imprinted-mouse.xlsx</code></a> (located on course GitHub repo), with <code>read_excel</code></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(us_cases_2021)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 3
-  date       state         cases
-  &lt;date&gt;     &lt;chr&gt;         &lt;dbl&gt;
-1 2021-01-01 Washington      521
-2 2021-01-01 Illinois        447
-3 2021-01-01 California    37951
-4 2021-01-01 Arizona        6438
-5 2021-01-01 Massachusetts     0
-6 2021-01-01 Wisconsin      2085</code></pre>
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>imprint <span class="ot">=</span> <span class="fu">read_excel</span>(<span class="st">&quot;babak-etal-2015_imprinted-mouse.xlsx&quot;</span>, <span class="at">na =</span> <span class="st">&quot;NaN&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<p>and compare it to the “wide” version</p>
+<p>Note that you have to tell the function what strings in the Excel spreadsheet correspond to <code>NA</code> or missing data (“NaN” in this case). The first column are the gene names for each row</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(us_cases_2021_wide)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>imprint<span class="sc">$</span>Genes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 57
-  date       Washi…¹ Illin…² Calif…³ Arizona Massa…⁴ Wisco…⁵ Texas Nebra…⁶  Utah
-  &lt;date&gt;       &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
-1 2021-01-01     521     447   37951    6438       0    2085  7779     772     0
-2 2021-01-02    1705   11390   52194    8895    9003    1129 14057     763  5135
-3 2021-01-03    5267    4428   35911   17222    3481    2593 16019     707  1726
-4 2021-01-04    2771    5354   40723    5158    4920    1626 23104     741  2160
-5 2021-01-05    2385    7052   37284   10134    4620    4019 30992    1289  3318
-6 2021-01-06    2077    7444   36907    6947    6851    4109 25322    1558  3769
-# … with 47 more variables: Oregon &lt;dbl&gt;, Florida &lt;dbl&gt;, `New York` &lt;dbl&gt;,
-#   `Rhode Island` &lt;dbl&gt;, Georgia &lt;dbl&gt;, `New Hampshire` &lt;dbl&gt;,
-#   `North Carolina` &lt;dbl&gt;, `New Jersey` &lt;dbl&gt;, Colorado &lt;dbl&gt;, Maryland &lt;dbl&gt;,
-#   Nevada &lt;dbl&gt;, Tennessee &lt;dbl&gt;, Hawaii &lt;dbl&gt;, Indiana &lt;dbl&gt;, Kentucky &lt;dbl&gt;,
-#   Minnesota &lt;dbl&gt;, Oklahoma &lt;dbl&gt;, Pennsylvania &lt;dbl&gt;,
-#   `South Carolina` &lt;dbl&gt;, `District of Columbia` &lt;dbl&gt;, Kansas &lt;dbl&gt;,
-#   Missouri &lt;dbl&gt;, Vermont &lt;dbl&gt;, Virginia &lt;dbl&gt;, Connecticut &lt;dbl&gt;, …</code></pre>
+<pre><code>  [1] &quot;PEC3&quot;              &quot;UBE2NL&quot;            &quot;TRAPPC9&quot;          
+  [4] &quot;EIF2C2&quot;            &quot;MIR344D-3&quot;         &quot;MIR344G&quot;          
+  [7] &quot;A930009L07RIK&quot;     &quot;KCNK9&quot;             &quot;RASGRF1&quot;          
+ [10] &quot;INPP5F&quot;            &quot;NAP1L5&quot;            &quot;USP29&quot;            
+ [13] &quot;HERC3-new&quot;         &quot;GM9801-new&quot;        &quot;BEGAIN&quot;           
+ [16] &quot;PX00010K13&quot;        &quot;PEG13&quot;             &quot;1110006E14RIK&quot;    
+ [19] &quot;MBII-343&quot;          &quot;MIRG&quot;              &quot;ZDBF2&quot;            
+ [22] &quot;IMPACT&quot;            &quot;NDN&quot;               &quot;NIBP&quot;             
+ [25] &quot;AK139287&quot;          &quot;CCDC40-AS&quot;         &quot;PX00113D24&quot;       
+ [28] &quot;PEC2&quot;              &quot;ZIM3&quot;              &quot;AK142849&quot;         
+ [31] &quot;MKRN3&quot;             &quot;IPW&quot;               &quot;B830012L14RIK&quot;    
+ [34] &quot;ADAM23&quot;            &quot;COMMD1&quot;            &quot;UBE3A&quot;            
+ [37] &quot;WARS&quot;              &quot;BCL2L1&quot;            &quot;BLCAP&quot;            
+ [40] &quot;CALCR&quot;             &quot;MAGEL2&quot;            &quot;CDH15&quot;            
+ [43] &quot;COPG2&quot;             &quot;U80893&quot;            &quot;NR_015479-new&quot;    
+ [46] &quot;GRB10&quot;             &quot;PEG10&quot;             &quot;SGCE&quot;             
+ [49] &quot;PEG1&quot;              &quot;MCTS2&quot;             &quot;H13&quot;              
+ [52] &quot;SNRPN&quot;             &quot;ZRSR1&quot;             &quot;MEG3&quot;             
+ [55] &quot;RIAN&quot;              &quot;PEG3&quot;              &quot;PLAGL1&quot;           
+ [58] &quot;1110014L15RIK-new&quot; &quot;ASB4&quot;              &quot;ZIM1&quot;             
+ [61] &quot;KLHDC10&quot;           &quot;DLK1&quot;              &quot;GNAS&quot;             
+ [64] &quot;PPP1R9A&quot;           &quot;PDE4D&quot;             &quot;A19&quot;              
+ [67] &quot;ZFP264&quot;            &quot;KCNQ1OT1&quot;          &quot;AK050713&quot;         
+ [70] &quot;RTL1&quot;              &quot;CDKN1C&quot;            &quot;PEG12&quot;            
+ [73] &quot;KCNQ1&quot;             &quot;NESPAS&quot;            &quot;SLC38A4&quot;          
+ [76] &quot;H19&quot;               &quot;IGF2&quot;              &quot;INS1&quot;             
+ [79] &quot;TFPI2&quot;             &quot;AK043599&quot;          &quot;EDN3-new&quot;         
+ [82] &quot;TMEM106A-new&quot;      &quot;DDC&quot;               &quot;RDM1&quot;             
+ [85] &quot;TNK1-new&quot;          &quot;TREM1-new&quot;         &quot;2400006E01RIK-new&quot;
+ [88] &quot;IGF2AS&quot;            &quot;UC008IHS.1-new&quot;    &quot;5133400J02RIK-new&quot;
+ [91] &quot;PHLDA2&quot;            &quot;AF357359&quot;          &quot;GAB1&quot;             
+ [94] &quot;SFMBT2&quot;            &quot;CD81&quot;              &quot;PHF17&quot;            
+ [97] &quot;TSSC4&quot;             &quot;DACT2-new&quot;         &quot;SLC22A2&quot;          
+[100] &quot;TSSC5&quot;             &quot;SLC22A3&quot;           &quot;KLF14&quot;            
+[103] &quot;ATP10A&quot;            &quot;DCN&quot;               &quot;PON2&quot;             
+[106] &quot;PON3&quot;              &quot;AMPD3&quot;             &quot;GABRB3&quot;           
+[109] &quot;GATM&quot;              &quot;TBC1D12&quot;           &quot;DIO3&quot;             
+[112] &quot;NAP1L4&quot;            &quot;MSUIT&quot;             &quot;ASCL2&quot;            
+[115] &quot;OSBPL5&quot;            &quot;TNFRSF23&quot;          &quot;AIRN&quot;             
+[118] &quot;HTR2A&quot;             &quot;MAPT&quot;              &quot;MKRN1-PS1&quot;        
+[121] &quot;DLX5&quot;              &quot;IGF2R&quot;             &quot;TRY4-new&quot;         
+[124] &quot;TSPAN32&quot;           &quot;ZIM2&quot;             </code></pre>
 </div>
 </div>
-<p>The data are saved as a <code>tibble</code>, which is really a fancy <code>data.frame</code>, which is a special kind of list that we will discuss in more detail next week. For the moment, you can practice slicing the data.frame as if it were a matrix.</p>
+<p>and the column names are the tissue type that RNA expression was measured in</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(imprint)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] &quot;Genes&quot;                   &quot;Preoptic Area (ref)&quot;    
+ [3] &quot;e17.5 Brain&quot;             &quot;Hypothalamus&quot;           
+ [5] &quot;e15 Brain (ref)&quot;         &quot;e9.5 Yolk Sac&quot;          
+ [7] &quot;Prefrontal Cortex (ref)&quot; &quot;e9.5 Placenta&quot;          
+ [9] &quot;Whole Brain&quot;             &quot;Adrenal Gland&quot;          
+[11] &quot;Olfactory Bulb&quot;          &quot;Cortex&quot;                 
+[13] &quot;e9.5 Embryo (ref)&quot;       &quot;Hippocampus&quot;            
+[15] &quot;TSCs (ref)&quot;              &quot;Cerebellum&quot;             
+[17] &quot;Striatum&quot;                &quot;e17.5 Placenta (ref)&quot;   
+[19] &quot;Pancreatic Islets&quot;       &quot;MEFs (ref)&quot;             
+[21] &quot;Bladder&quot;                 &quot;Lung&quot;                   
+[23] &quot;Duodenum&quot;                &quot;White Adipose&quot;          
+[25] &quot;Skeletal Muscle&quot;         &quot;Skin&quot;                   
+[27] &quot;Heart&quot;                   &quot;Stomach&quot;                
+[29] &quot;Thymus&quot;                  &quot;Kidney&quot;                 
+[31] &quot;Liver&quot;                   &quot;Whole Bone Marrow&quot;      
+[33] &quot;Spleen&quot;                  &quot;Testes&quot;                 </code></pre>
+</div>
+</div>
+<p>where the first element is the column name of the “Genes” column. You will manipulate these data later when we talk about tidy data and <code>dplyr</code>.</p>
+</section>
+<section id="lab" class="level1">
+<h1>Lab <img src="data:image/png;base64,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" class="img-fluid"></h1>
+<p>Now that you have all the essential elements of slicing, let’s do some more things with COVID-19 data, but this time with world wide data from “<a href="https://ourworldindata.org/coronavirus">Our World in Data</a>”: <a href="https://github.com/owid/covid-19-data/tree/master/public/data" class="uri">https://github.com/owid/covid-19-data/tree/master/public/data</a>. This is a big data set, so it might take a few moments to download.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>owid <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://covid.ourworldindata.org/data/owid-covid-data.csv&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Before starting on the problems, take a look at which columns are provided in the table. This will help for solving the problems. Hint: use an <code>R</code> command to do this and you get a nice list of all the columns.</p>
 <section id="problems" class="level3">
 <h3 class="anchored" data-anchor-id="problems">Problems</h3>
-<p>Load the <code>.csv</code> file using the code above and show the R code in your <code>.qmd</code> file for each of the following problems. You should be able to use a few lines of R code to obtain the answer directly (i.e., you shouldn’t just scroll though the data table and give the answer by hand). Use the <code>us_cases_2021</code> and <code>us_cases_2021_wide</code>data frames; the “long” format data frame <code>us_cases_2021</code> may be easier to use in some problems whereas the `us_cases_2021_wide” may be easier to use in others.</p>
 <ol type="1">
-<li><p>Which states have had more than 75,000 cases during one day in 2021?</p></li>
-<li><p>How many cases has Kentucky had during 2021? (hint: use the <code>sum</code> function)</p></li>
-<li><p>How many cases where there outside of California in the month of August? (hint: you’ll need the boolean <code>&amp;</code> to combine multiple conditions)</p></li>
-<li><p>Which US state has the second fewest number of cases in 2021? (hint: use <code>sapply</code> with <code>sum</code> and then use the <code>sort</code> function)</p></li>
-<li><p>Which day in 2021 had the highest number of cases in the country (all states and territories)? (hint: use <code>apply</code> and <code>sum</code> to get the totals for each date. Then use the <code>order</code> function to give you the right order to sort the dates…)</p></li>
+<li><p>Plot the new cases per day per million people for the pandemic for the United States. Use a line plot. Hint: use the help for plot, <code>?base::plot</code>, to set the plot type.</p></li>
+<li><p>What day had the highest number of deaths in the United States? Hint: use the <code>order</code> function.</p></li>
+<li><p>What day and in what country was the worst (i.e., highest) for per capita death due to COVID-19?</p></li>
+<li><p>Create a new data frame called <code>new_cases_per_100k</code> consisting of the following columns, <code>location</code>, <code>date</code>, and <code>cases</code>, where <code>cases</code> is the number of new cases per 100,000 people. In two separate plots, plot the number of new cases per 100k people over time for the United Kingdom (plot 1) and Canada (plot 2). If you wanted to present these plots side by side so as to compare the severity of the pandemic in the UK vs Canada, what might you have to do to make them more comparable?</p></li>
+<li><p>In the <code>owid</code> data set, how many countries have data on ICU patients (column <code>icu_patients</code>)? Hint: you might need the <code>is.na</code> function and the <code>unique</code> function.</p></li>
+<li><p>In 2021, on how many days did the United States have fewer than 2 deaths per 10 million people due to COVID-19? What is answer the United Kingdom? You may run into issues where you’re comparing an <code>NA</code> value to a number, like 2. In this case, you should exclude the <code>NA</code> values by using <code>!is.na(owid$new_cases_per_million)</code> as the first in your series of logical conditions for your slice.</p></li>
 </ol>
+<ul>
+<li><p>Challenge problem (+3 extra credit)</p>
+<p>Plot a heatmap of the imprinting data using the <code>heatmap</code> function. The rows and columns of the heatmap should be labeled properly with the gene names (rows) and tissue names (columns). The Babak et al. (2015) paper has a similar heatmap in Fig 1. Hint: read carefully the help for the <code>heatmap</code> function and know that you can convert data frames to matrices with <code>as.matrix</code>.</p></li>
+</ul>
 </section>
 </section>
 
