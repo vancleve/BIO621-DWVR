@@ -1,13 +1,11 @@
 ---
 title: 'Tidy Data'
 author: "Jeremy Van Cleve"
-date: 27th September 2021
-output: html_document
+date: 26 09 2022
+format: 
+  html:
+    self-contained: true
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 # Outline for today
 
@@ -30,7 +28,8 @@ Hadley Wickham points out the nice connection between the above quote and data f
     Phase 2. The input and formatting of data into your analysis tool (e.g., R). This might involve minimal changing of the "format" or a great deal of reshaping of the data.
     
 Working backward, you do the least work on data formatting if you choose to save your data initially in a format that is easiest to analyze with R. Since we will use the graphing package, `ggplot2`, by Hadley Wickham, we will use the data format, **tidy data**, that he advocates. Lest you worry that this is too Hadley specific, or even R specific, this kind of format is pretty popular now as a way to "layer" or "compose" plots that use different graphical elements to represent different variables in the data (e.g., `plotly`, `seaborn` in python, etc). To get a sense for what his format is and why it might be useful, consider some different ways to organize data on tuberculosis (TB) cases where you have three variables, *country*, *year*, and *population*, for each measurement of *cases*. First, each variable including *cases* could have its own column:
-```{r, message=FALSE}
+```{r}
+#| message: false
 library(tidyverse)
 table1
 ```
@@ -55,12 +54,19 @@ Visually, this looks like
 
 The primary benefit of tidy data is that every variable is a vector (column), which means that slicing data is just slicing columns. Though this may become complicated when the number of variables is large, there are some helper functions that will make slicing tidy data much easier. The slicing functions come from the package `dplyr` and the plotting package `ggplot2` assumes tidy data.
 
-To give a flavor of the power of tidy data and `ggplot2`, we'll look at an example. The "GWAS Catalog" (<https://www.ebi.ac.uk/gwas/home>) keeps track of the SNPs associated with traits in GWAS studies. We can download these data, take a reasonable subset to play with (the 40 diseases with the most SNPS), and plot some things. For example, here are SNPs associated with colon cancer and prostate cancer:
-```{r, message=FALSE}
+To give a flavor of the power of tidy data and `ggplot2`, we'll look at an example. The "GWAS Catalog" (<https://www.ebi.ac.uk/gwas/home>) keeps track of the SNPs associated with traits in GWAS studies. We can download these data, take a reasonable subset to play with (the 100 diseases with the most SNPS), and plot some things. For example, here are SNPs associated with colon cancer and prostate cancer:
+```{r}
+#| message: false
+#| warning: false
 # https://www.ebi.ac.uk/gwas/docs/file-downloads
 # we'll load a subset of these data; namely, the 100 diseases with the most SNPs in the database once we remove those associated with some common body/weight and education phenotypes
+# to clean things up a little, we filter out rows where the CHR_POS isn't a single number; this way, the x-axis label is nice automatically.
 
-gwas = read_tsv("gwas_catalog_v1.0.2-associations_e104_r2021-09-23_no-waist_hip_body_blood_education_math_top100.tsv")
+gwas = read_tsv("gwas_catalog_v1.0.2-associations_e104_r2021-09-23_no-waist_hip_body_blood_education_math_top100.tsv") %>% 
+  filter(!grepl("x|;", CHR_POS)) %>%
+  filter(!is.na(CHR_POS)) %>%
+  mutate(CHR_POS = as.numeric(CHR_POS))
+
 filter(gwas, `DISEASE/TRAIT` == 'Prostate cancer' | `DISEASE/TRAIT` == "Colorectal cancer" | `DISEASE/TRAIT` == "Breast cancer") %>% 
   ggplot(aes(x=CHR_POS)) + geom_point(aes(y=PVALUE_MLOG, color=`DISEASE/TRAIT`))
 ```
@@ -72,7 +78,7 @@ Often, data will not be in the tidy format by default, so it will be necessary t
 1. One variable might be spread across multiple columns.
 2. One observation might be scattered across multiple rows.
 
-Typically, a dataset will only suffer one of the above problems. The first problem is dealt with using the `pivot_longer` function and the second with the `pivot_wdier` function.
+Typically, a dataset will only suffer one of the above problems. The first problem is dealt with using the `pivot_longer` function and the second with the `pivot_wider` function.
 
 ## Making data "longer"
 
@@ -102,11 +108,11 @@ To join these two results together, you use the function `full_join`
 ```{r}
 full_join(tidy4a, tidy4b)
 ```
-which is the same as the first table (rows are sorted differently though)
+which is the same as the first table
 ```{r}
 table1
 ```
-These "joins" are related to joins you do with databases if you know SQL. For more on this connection, see Chapter 13 in "R for Data Science" (<http://r4ds.had.co.nz/>). 
+These "joins" are related to joins you do with databases if you know SQL. For more on this connection and on joins, see Chapter 13 in "R for Data Science" (<http://r4ds.had.co.nz/>). 
 
 ## Making data "wider"
 
@@ -130,17 +136,17 @@ To read more about these, see Chapter 12 in "R for Data Science" (<http://r4ds.h
 
 # Slicing tidy data with `dplyr`
 
-Now that you have made your data tidy, you probably want to slice and dice it. The `dplyr` package has handy functions for doing just this. Generally, `dplyr` is useful for doing the following five things
+Now that you have made your data tidy, you probably want to slice and dice it. The `dplyr` package has handy functions for doing just this. These functions will making slicing **MUCH EASIER** than the base R way we've been doing it so far. Generally, `dplyr` is useful for doing the following five things
 
 1. Pick observations (i.e., rows) by their values for specific variables: **`filter()`**.
-2. Reorder the rows: **`arrange()`**.
+2. Reorder or sort the rows: **`arrange()`**.
 3. Pick variables (i.e., columns) by their names: **`select()`**.
-4. Create new variables with functions of existing variables: **`mutate()`**.
+4. Create new variables with functions of existing variables (or modifying existing variables): **`mutate()`**.
 5. Collapse many values down to a single summary: **`summarise()`**.
 
 Each of the functions above works in a similar way.
 
-- The first argument is the data frame (in a *tidy* format of course)
+- The first argument is the data frame.
 - The subsequent arguments describe what to do with the data frame. You can refer to columns in the data frame directly without using `$`.
 - The result is a new data frame.
 
@@ -160,21 +166,21 @@ We could apply another filter by just adding an argument, such as having a -log(
 ```{r}
 filter(gwas, `DISEASE/TRAIT` == 'Colorectal cancer', PVALUE_MLOG > 10)
 ```
-Note that `filter` combines consecutive arguments using the "&". You could equivalently give a single argument with the "&" to get the same slice
+Note that `filter` combines consecutive arguments by default using the "&". You could equivalently give a single argument with the "&" to get the same slice
 ```{r}
 filter(gwas, `DISEASE/TRAIT` == 'Colorectal cancer' & PVALUE_MLOG > 10)
 ```
 
 ## Arrange rows with `arrange()`
 
-The function `arrange` just sorts the rows based on the columns you specify. For example, to sort the colorectal cancer SNPs by `CHR_POS` (position on the chromosome),
+The function `arrange` just sorts the rows based on the columns you specify. For example, to sort the colorectal cancer SNPs by `DATE` of the study,
 ```{r}
 colocancer = filter(gwas, `DISEASE/TRAIT` == 'Colorectal cancer')
-arrange(colocancer, CHR_POS)$CHR_POS
+arrange(colocancer, DATE)
 ```
 and use `desc` to make the sort a descending one,
 ```{r}
-arrange(colocancer, desc(CHR_POS))$CHR_POS
+arrange(colocancer, desc(DATE))
 ```
 
 ## Select columns with select()
@@ -209,14 +215,27 @@ grouped_gwas = group_by(gwas, `DISEASE/TRAIT`, JOURNAL)
 meanp = summarize(grouped_gwas, mean_mlog_p_value = mean(PVALUE_MLOG))
 meanp
 ```
-Finally, let's sort by the disease and p-value to see the pattern with the journal a little better
+Finally, let's take the mean across all diseases for each journal and then sort by p-value to see the pattern with the journal a little better
 ```{r}
-arrange(meanp, `DISEASE/TRAIT`, desc(mean_mlog_p_value))
+arrange(summarize(group_by(gwas, JOURNAL), mean_mlog_p_value = mean(PVALUE_MLOG)), desc(mean_mlog_p_value))
 ```
 Another nice function to use with `summarize` is the "counting" function `n()`, which can give the number of rows in each group. Since each row is a SNP, we can get the number of SNPs for each disease/trait this way:
 ```{r}
 arrange(summarize(group_by(gwas, `DISEASE/TRAIT`), n_SNPS = n()), desc(n_SNPS))
 ```
+
+# Using the `%>%` operator to chain together functions
+
+The slicing and summarzing operations we've been doing can quickly get messy as we added more operations. Since each operation is applied to the results of the previous one, it ends up with a bunch of very nested parentheses, which can be hard to read. The pipe operator `%>%` allows you to easily chain together operations so that its easier to read them from left to right. For example, the previous `summarize` and `arrange` operations could be put together like
+```{r}
+gwas %>%
+  group_by(`DISEASE/TRAIT`) %>%
+  summarize(n_SNPS = n()) %>%
+  arrange(desc(n_SNPS))
+```
+Effectively, the pipe takes what is on the left side of it and uses it as the first argument in the function on the right side. In the above example, `gwas`, our initial data table, is on the left and it gets used as the first argument in `group_by`. The `group_by` function returns a `data.frame`, which is then used as the argument to the function of the right of the next pipe, which is `summarize`. The rule of thumb then is that if you want to convert a command without a pipe to one where you use a pipe, take the first argument out of the function, put it on the left of the function separated by the pipe. Likewise, to get rid of the pipe, take the input on the left and put it in the first argument of the function on the right of the pipe and delete the pipe. 
+
+**A very significant advantage** of structuring your slicing / wrangling commands this way when you use RStudio is that RStudio will help you auto-complete column names. As you've probably seen already, typing these names can get cumbersome, so this is a big help. RStudio doesn't do this when you put the `data.frame` object in the function directly (for some reason unknown to me).
 
 
 [^1]: Wickham, Hadley. 2014. J Stat Softw, 59:1--23. DOI: [10.18637/jss.v059.i10](http://dx.doi.org/10.18637/jss.v059.i10)
@@ -230,14 +249,15 @@ arrange(summarize(group_by(gwas, `DISEASE/TRAIT`), n_SNPS = n()), desc(n_SNPS))
 1. Using the GWAS data, produce a data table that shows the **mean**, **maximum**, **minimum**, and **variance** of `PVALUE_MLOG` for each combination of disease and journal.
 
 2. Recall the gene expression last that was briefly introduced last week:
+
     ```{r}
     library(readxl)
     imprint = read_excel("babak-etal-2015_imprinted-mouse.xlsx", na = "NaN")
     ```
-
+    
     Each row is a gene, each column is a tissue type, and each cell contains a gene expression measurement.
 
-        **Make these data tidy (in one way) by collapsing the tissue columns and making the data table longer**
+    **Make these data tidy (in one way) by collapsing the tissue columns and making the data table longer**
     
     You will need the `pivot_longer` function. The first trick here will be first to identify the "observations" and then the "names_to", which is the variable that changes across each observation. 
     
@@ -253,8 +273,6 @@ arrange(summarize(group_by(gwas, `DISEASE/TRAIT`), n_SNPS = n()), desc(n_SNPS))
 
 5. Use the New York Times COVID-19 Data:
     ```{r}
-    us = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
+    us = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv", show_col_types = FALSE)
     ```
-    These data are tidy. Make them **wider** by making columns for each state and using the `cases` as the values. You should have only one row for each date between now and when the pandemic began. If you're getting many thousands of rows, you need to give `pivot_wider` some `id_cols` (see the `pivot_gather` documentation...). OR give `pivot_wider` a simpler data table...Either way works.
-    
-    
+    These data are tidy. Make them **wider** by making columns for each state and using the `cases` as the values. You should have only one row for each date between now and when the pandemic began. If you're getting many thousands of rows, you need to give `pivot_wider` some `id_cols` (see the `pivot_wider` documentation...). OR give `pivot_wider` a simpler data table...Either way works.
