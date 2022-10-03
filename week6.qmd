@@ -24,8 +24,11 @@ The base package (basic functions included with R and automatically loaded) incl
 
 Before plotting, you need some data. A common dataset used in data exploration courses in R is the "Gapminder" data, which is a collection of time series data for countries.
 ```{r}
+#| message: false
 library(gapminder)
 library(tidyverse)
+```
+```{r}
 glimpse(gapminder)
 ```
 The data covers the statistics listed above for
