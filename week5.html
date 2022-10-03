@@ -3261,10 +3261,10 @@ $ `GENOTYPING TECHNOLOGY`      &lt;chr&gt; &quot;Genome-wide genotyping array&qu
 <ol type="1">
 <li><p>Using the GWAS data, produce a data table that shows the <strong>mean</strong>, <strong>maximum</strong>, <strong>minimum</strong>, and <strong>variance</strong> of <code>PVALUE_MLOG</code> for each combination of disease and journal.</p></li>
 <li><p>Recall the gene expression last that was briefly introduced last week:</p>
-<p>::: {.cell}</p>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
 <span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>imprint <span class="ot">=</span> <span class="fu">read_excel</span>(<span class="st">&quot;babak-etal-2015_imprinted-mouse.xlsx&quot;</span>, <span class="at">na =</span> <span class="st">&quot;NaN&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>:::</p>
+</div>
 <p>Each row is a gene, each column is a tissue type, and each cell contains a gene expression measurement.</p>
 <p><strong>Make these data tidy (in one way) by collapsing the tissue columns and making the data table longer</strong></p>
 <p>You will need the <code>pivot_longer</code> function. The first trick here will be first to identify the “observations” and then the “names_to”, which is the variable that changes across each observation.</p>
@@ -3274,9 +3274,9 @@ $ `GENOTYPING TECHNOLOGY`      &lt;chr&gt; &quot;Genome-wide genotyping array&qu
 <p>Hint: you will need to count each gene once even if it appears in multiple rows, which can be done with the <code>distinct</code> function.</p></li>
 <li><p>Use <code>pivot_wider</code> to return the tidy data from Problem 2 to their original wide format.</p></li>
 <li><p>Use the New York Times COVID-19 Data:</p>
-<p>::: {.cell}</p>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>us <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv&quot;</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>:::</p>
+</div>
 <p>These data are tidy. Make them <strong>wider</strong> by making columns for each state and using the <code>cases</code> as the values. You should have only one row for each date between now and when the pandemic began. If you’re getting many thousands of rows, you need to give <code>pivot_wider</code> some <code>id_cols</code> (see the <code>pivot_wider</code> documentation…). OR give <code>pivot_wider</code> a simpler data table…Either way works.</p></li>
 </ol>
 </section>
