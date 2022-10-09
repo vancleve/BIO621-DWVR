@@ -1,23 +1,20 @@
 ---
 title: 'More `ggplot2`: plot types'
 author: "Jeremy Van Cleve"
-date: 11th October 2021
-output: html_document
+date: 10 Oct 2022
+format: 
+  html:
+    self-contained: true
 ---
   
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 # Announcements
 
-- Sign up for project presentations on Canvas! 
-- If you haven't started playing with your dataset, start doing so now.
+- Sign up for project presentations on Canvas!
+- Start brainstorming the dataset you want to use for your figures and presentation.
 - I'm always available to help with picking a dataset and analyzing it.
 
 # Outline for today
 
-- Using the the funky "pipe" to combine tidy slicing/plotting operations
 - Smoothed line plots
 - Plotting distributions
     - Bar plots
@@ -33,7 +30,8 @@ Before launching into this, we'll introduce a useful object that I should have r
 # Using the pipe %>% for combining operations
 
 To see how to use the pipe `%>%`, lets first load the New York Times COVID-19 daily case and death data for the US.
-```{r, message=FALSE}
+```{r}
+#|  message: false
 library(tidyverse)
 
 us = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/rolling-averages/us-states.csv")
@@ -300,5 +298,3 @@ us %>%
     - On which day is the median number of deaths per 100k the highest?
     - Bonus! Use `facet_wrap` to get boxplots for each day for each state. Looking at the boxplots, which state do you think reports deaths mostly on just ONE day of the week?
     
-    
-
