@@ -25,64 +25,47 @@ The power of a package like `ggplot2` is not in the fact that it can do many dif
 
 Nevertheless, `ggplot2` does allow one to create many different kinds of plots and understanding how to use these plots and when they are useful is instructive for using other visualization packages in R and other languages.
 
-Before launching into this, we'll introduce a useful object that I should have really introduced earlier since it makes multiple slicing and plotting operations look more logical.
+# Reading in some COVID-19 data from the New York Times
 
-# Using the pipe %>% for combining operations
-
-To see how to use the pipe `%>%`, lets first load the New York Times COVID-19 daily case and death data for the US.
+We'll continue with the New York Times COVID-19 daily case and death data for the US.
 ```{r}
-#|  message: false
+#| warning: false
 library(tidyverse)
 
-us = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/rolling-averages/us-states.csv")
-pop = read_csv("us_census_state_pop_est.csv")
-us = left_join(us, pop %>% mutate(population = `2020`) %>% select(state, population)) %>%
+us = read_csv("https://github.com/nytimes/covid-19-data/raw/master/rolling-averages/us-states.csv")
+pop = read_csv("https://github.com/vancleve/BIO621-DWVR/raw/main/us_census_population_totals_est_2020-2021.csv")
+us = us %>% left_join(pop %>% mutate(state = State, population = `2021`) %>% select(state, population)) %>%
+  select(!contains("avg")) %>%
   mutate(cases_per_100k = signif(cases/population*1e5, digits = 3)) %>%
   mutate(deaths_per_100k = signif(deaths/population*1e5, digits = 3)) %>%
-  mutate(day = factor(weekdays(date), levels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))) %>%
-  mutate(month = factor(months(date), levels = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"))) %>%
-  filter(!is.na(population), cases >= 0, deaths >= 0)
+  mutate(day = factor(weekdays(date), 
+                      levels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))) %>%
+  mutate(month = factor(months(date), 
+                        levels = c("January", "February", "March", "April", "May", "June", 
+                                   "July", "August", "September", "October", "November", "December"))) %>%
+  filter(!is.na(population), cases >= 0, deaths >= 0) %>%
+  select(-population)
 ```
-The above code also loads in estimated population sizes for each state from [US Census data](https://www.census.gov/programs-surveys/popest/technical-documentation/research/evaluation-estimates/2020-evaluation-estimates/2010s-totals-national.html) and gets rid of rows for which there aren't population data. We also add a few columns for the day and month that will be helpful later and remove days where cases were negative (which was a way for states to correct prior mistakes in reporting).
+The above code also loads in estimated population sizes for each state in 2021 from [US Census data](https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html) and gets rid of rows for which there aren't population data. We also add a few columns for the day and month that will be helpful later and remove days where cases were negative (which was a way for states to correct prior mistakes in reporting).
 
-These data are already pretty tidy. But what could we do to make them **even more tidy**? 
+Let's work on a slice of these data with just the cases in Kentucky, West Virginia, and Tennessee for the months of August and September 2022:
 ```{r}
-xtra_tidy_us = pivot_longer(us, c(cases, cases_avg, cases_per_100k, cases_avg_per_100k, deaths, deaths_per_100k, deaths_avg, deaths_avg_per_100k), names_to = "statistic", values_to = "value")
-```
-What if we then wanted to remove the column `geoid`? We could do this:
-```{r}
-xtra_tidy_us = select(xtra_tidy_us, -geoid)
-```
-
-Those tidying operations can be put together with the pipe operator `%>%`. The pipe allows you to easily chain together operations so that its easier to read them from left to right. For example, our previous two operations could be put together like
-```{r}
-xtra_tidy_us = 
-  us %>% 
-  pivot_longer(c(cases, cases_avg, cases_avg_per_100k, deaths, deaths_avg, deaths_avg_per_100k), names_to = "statistic", values_to = "value") %>%
-  select(-geoid)
-```
-Effectively, the pipe takes what is on the left side of it and uses it as the first argument in the function on the right side. In the above example, `us`, our initial data table, is on the left and it gets used as the first argument in `pivot_longer`. The `pivot_longer` function returns a `data.frame`, which is then used as the argument to the function of the right of the next pipe, which is `select`. The rule of thumb then is that if you want to convert a command without a pipe to one where you use a pipe, take the first argument out of the function, put it on the left of the function separated by the pipe. Likewise, to get rid of the pipe, take the input on the left and put it in the first argument of the function on the right of the pipe and delete the pipe. 
-
-Using the pipe, we can then make a whole sequence of command look much simpler. For example, suppose we wanted a data table with just the cases in Kentucky, West Virginia, and Tennessee for the months of August and September 2021
-```{r}
-ky_wv_tn_cases_aug_sept_2021 = 
+ky_wv_tn_cases_jul_aug_2022 = 
   us %>%
   select(-contains("deaths")) %>%
   select(-geoid) %>%
   filter(state %in% c("Kentucky", "West Virginia", "Tennessee")) %>%
-  filter(date >= "2021-08-01" & date <= "2021-09-30")
+  filter(date >= "2022-07-01" & date <= "2022-08-31")
 
-ky_wv_tn_cases_aug_sept_2021
+ky_wv_tn_cases_jul_aug_2022
 ```
 Note the use of the match operator `%in%`. It's a nice way to say that an element should exactly match one of a list of values.
 
-**Finally, a very significant advantage** of structuring your slicing / wrangling commands this way when you use RStudio is that RStudio will help you auto-complete column names. As you've probably seen already, typing these names can get cumbersome, so this is a big help. RStudio doesn't do this when you put the `data.frame` in the function directly (for some unknown reason).
-
 # Smoothed line plots
 
-In previous weeks, you have produced simple scatter and line plots. With these the case data, we can produce a scatter plot with `geom_point`.
+In previous weeks, you have produced simple scatter and line plots. With these the KY, WV, and TN case data, we can produce a scatter plot with `geom_point`.
 ```{r}
-ky_wv_tn_plot = ky_wv_tn_cases_aug_sept_2021 %>% 
+ky_wv_tn_plot = ky_wv_tn_cases_jul_aug_2022 %>% 
   ggplot(aes(x=date, y=cases_per_100k, color=state))
 ky_wv_tn_plot + geom_point()
 ```
@@ -90,7 +73,7 @@ We can produce a line through the points by adding `geom_line`.
 ```{r}
 ky_wv_tn_plot + geom_point() + geom_line()
 ```
-Producing a line through these points isn't that helpful in showing a trend because the data is very spikey. This has to do with states often not reporting data on the weekends and then adding weekend data to the next business day.
+Producing a line through these points isn't that helpful in showing a trend because the data is very spikey. This has to do with states often not reporting data on the weekends and then adding weekend data to the next business day. Some states only report data once a week!
 
 To get a better sense of the trend, you might want a trend line like a linear regression. R has a very sophisticated regression framework but accessing it in `ggplot2` only requires using the `geom_smooth()` function.
 ```{r}
@@ -128,14 +111,14 @@ Almost certainly, your data will contain multiple samples or replicates of a mea
 
 ## Bar plots
 
-If your data has discrete categories (i.e., "categorical" data), then you may want a simple bar plot. As an example, we can create a bar plot with how many days cases per 100k exceeded 100 for Kentucky, West Virginia, and Tennessee
+If your data has discrete categories (i.e., "categorical" data), then you may want a simple bar plot. As an example, we can create a bar plot with how many days cases per 100k exceeded 100.
 ```{r}
 cases_exceed_100_per_100k = 
   us %>%
   mutate(exceed_100_per_100k = cases_per_100k >= 100) %>%
   filter(exceed_100_per_100k == TRUE)
 
-cases_exceed_100_per_100k
+cases_exceed_100_per_100k %>% select(date, state, exceed_100_per_100k)
 ```
 
 Each row of this table is now a different state. Plot these data in a bar plot using `geom_bar()`, which uses the `count` statistic on the data and thus plots the number of days where a state exceeds 100 cases per 100k.
@@ -166,6 +149,15 @@ cases_exceed_100_per_100k %>%
   ggplot() +
   geom_bar(aes(x = exceed_100_per_100k, fill = day), position = "fill")
 ```
+
+Finally, you might notice the label on the tick mark on the above plots, `TRUE`. This is because the bar plot is counting the number of each discrete value it finds in the `exceed_100_per_100k` column. Since we only have rows in this table where `exceed_100_per_100k == TRUE`, we could equally just set `x=state` in the aesthetic and get a bar plot separated by state.
+```{r}
+cases_exceed_100_per_100k %>% 
+  ggplot() +
+  geom_bar(aes(x = state, fill = day)) +
+  coord_flip() # coordinate flip makes reading the state names easier
+```
+
 
 ## Histograms
 
@@ -200,23 +192,22 @@ Now we can see how Monday is very similar to Sunday but just shifted over to ind
 
 You can just draw lines instead of filled bars using `geom_freqpoly()`
 ```{r}
-us %>% ggplot() +
+us %>% filter(day %in% c("Sunday", "Monday")) %>% ggplot() +
   geom_freqpoly(aes(x = log10(1 + cases_per_100k), color=day))
 ```
 
-You might have noticed that R keeps reminding you to adjust the `binwidth`. This is simply the width of the bins on the x-axis. For example, a binwidth of 0.1 yields
+You might have noticed that R keeps reminding you to adjust the `binwidth`. This is simply the width of the bins on the x-axis. For example, a binwidth of 0.2 yields
 ```{r}
-us %>% ggplot() +
+us %>% filter(day %in% c("Sunday", "Monday")) %>% ggplot() +
   geom_freqpoly(aes(x = log10(1 + cases_per_100k), color=day), binwidth = 0.2)
 ```
 
-Suppose that you want to smooth the above plot so that it looks like some continuous distribution. The statistical method used to do this is called a "kernel density estimate" or KDE. Essentially, a basic KDE tries to combine Gaussian distributions together in a way to approximate empirical distribution. The geometry function to use for a KDE is `geom_density`.
+Suppose that you want to smooth the above plot so that it looks like some continuous distribution. The statistical method used to do this is called a "kernel density estimate" or KDE. Essentially, a basic KDE tries to combine Gaussian distributions together in a way to approximate empirical distribution. Its basically the continuous version of a historgram (which has discrete bins). The geometry function to use for a KDE is `geom_density`.
 ```{r}
 us %>% filter(day %in% c("Sunday", "Monday")) %>% ggplot() +
   geom_density(aes(x = log10(1 + cases_per_100k), fill = day), alpha = 0.3)
 ```
-
-Notice how the heights of the curves have shifted. This is because the area under the curve of the KDE must sum to one and the y-axis measures the density, or approximately the probability, of a specific log10 number of cases per 100k. The histogram can be normalized too by dividing each curve by the total number of days in the dataset.
+Notice how the y-axis has a different scale now. This is because the area under the curve of the KDE must sum to one and the y-axis measures the density, or approximately the probability, of a specific log10 number of cases per 100k. The histogram can be normalized too by dividing each curve by the total number of days in the dataset.
 
 ## Strip plots
 
@@ -230,7 +221,7 @@ Yikes. Too many state. You need a more condensed way to plot the distribution of
 ```{r}
 us %>% ggplot() +
   geom_point(aes(x = state, y = log10(1 + cases_per_100k))) + 
-  coord_flip() # coordinate flip makes reading the state names easier
+  coord_flip()
 ```
 
 This is better, but many of the points overlap. To get around this, you can use `geom_jitter()`, which spreads the points out (and some `alpha`).
@@ -250,18 +241,27 @@ us %>% ggplot(aes(x = state, y = log10(1 + cases_per_100k))) +
   coord_flip()
 ```
 
-The box plots make it much easier to see the central tendency (median) as well as how dispersed each distribution is. For example, the above plot reveals that states like Alabama and Arkansas have some of the highest median case rates. You can modify boxplot properties including the color of the outliers using `outlier.color`.
+The box plots make it much easier to see the central tendency (median) as well as how dispersed each distribution is. For example, the above plot reveals that states like Arkansas have some of the highest median case rates. You can modify boxplot properties including the color of the outliers using `outlier.color`.
 ```{r}
 us %>% ggplot(aes(x = state, y = log10(1 + cases_per_100k))) +
   geom_boxplot(outlier.color = "red") +
   coord_flip()
 ```
 
-Finally, it's easier to read the box plots if they are organized by the median value. To do this, you the `reorder` function for the x-axis in the aesthetic argument and replace `x = pollster` with `x = reorder(pollster, HillaryMargin, FUN = median)`. 
+It's easier to read the box plots if they are organized by the median value. To do this, you the `reorder` function for the x-axis in the aesthetic argument and replace `x = state` with `x = reorder(state, cases_per_100k, FUN = median)`. 
 ```{r}
-us %>% ggplot(aes(x = reorder(state, log10(1 + cases_per_100k), FUN = median), y = log10(1 + cases_per_100k))) +
+us %>% ggplot(aes(x = reorder(state, cases_per_100k, FUN = median), y = log10(1 + cases_per_100k))) +
   geom_boxplot(outlier.color = "red") +
   coord_flip()
+```
+This `reorder` function helps with our bar plot from above with the number of days above with more than 100 cases per 100k. This example is a little more complicated because we need to tell `reorder` which variable we want to sort the states by but the variable we want is actually the count of the number of days with more 100 cases per 100k, which the bar plot calculates. So we have to create that column first by first using `group_by` then `mutate(count = n())` to count the number of rows for each state. Now we can reorder.
+```{r}
+cases_exceed_100_per_100k %>% 
+  group_by(state) %>%
+  mutate(count = n()) %>%
+  ggplot() +
+  geom_bar(aes(x = reorder(state, count), fill = day)) +
+  coord_flip() # coordinate flip makes reading the state names easier
 ```
 
 Finally, a variant of the box plot is called a "violin plot". Violin plots show the probability density using KDE. Let's plot them for a subset of states
@@ -272,7 +272,6 @@ us %>%
   geom_violin() +
   coord_flip()
 ```
-
 
 # Lab ![](assets/beaker.png)
 
@@ -291,10 +290,9 @@ us %>%
     - Plot the distribution of gene expression values that are positive (expression from the paternal chromosome) and the distribution of expression values that are negative (expression from the maternal chromosome) on the same plot.
     - Choose your favorite plot type for this question (histogram or KDE).
     
-4. Plot boxplots of the deaths per 100k (not `avg`!) for each day of the week using the `us` data table we created at the beginning of the lecture.
+4. Plot boxplots of the deaths per 100k for each day of the week of **2021** using the `us` data table we created at the beginning of the lecture (you'll need to include the whole block of code that creates `us` in your submitted `.qmd` so that it works when I run it).
     - Use `cood_flip` to have the days on the y-axis and the deaths on the x-axis
     - It may be useful to use the `log10(1 + x)` transformation we used in earlier examples
     - Order the boxplots by their median values.
     - On which day is the median number of deaths per 100k the highest?
-    - Bonus! Use `facet_wrap` to get boxplots for each day for each state. Looking at the boxplots, which state do you think reports deaths mostly on just ONE day of the week?
-    
+    - Bonus! Create a new plot that uses `facet_wrap` to get boxplots for each day for each state. Looking at the boxplots, which state do you think reports deaths mostly on just **one** day of the week?
