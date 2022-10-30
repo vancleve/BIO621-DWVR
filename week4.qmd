@@ -270,7 +270,8 @@ library(readxl) # package for reading Excel files
 Now, you can use the `read_csv` function to get the COVID-19 data table from the NY Times.
 
 ```{r}
-us = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
+#| message: false
+us = read_csv("https://github.com/nytimes/covid-19-data/raw/master/us-states.csv")
 ```
 
 Notice that `read_csv` gives you some nice output telling us about the table you just read. This function and others like it (i.e., from the `readr` and `readxl` packages) do a lot for you automatically and have many nice features, some of which we'll cover later.

@@ -237,7 +237,7 @@ Here, `facet_grid` arranges the plots nicely in a grid. Positive values of expre
 4. Use the COVID-19 data below from the New York Times. It has daily case and death data.
    ```{r}
    #| message: false
-   us = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/rolling-averages/us-states.csv")
+   us = read_csv("https://github.com/nytimes/covid-19-data/raw/master/rolling-averages/us-states.csv")
    ```
     - Choose three states and plot the cases per 100k versus time.
     - Make the line color vary by the deaths per 100k.

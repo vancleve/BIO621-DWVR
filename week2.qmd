@@ -278,7 +278,7 @@ In order to do this, we'll use functions from the `tidyverse` set of packages. T
 #| warning: false
 library(tidyverse)
 
-us_cases = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv") %>%
+us_cases = read_csv("https://github.com/nytimes/covid-19-data/raw/master/us-states.csv") %>%
   pivot_wider(date, names_from = state, values_from = cases) %>%
   mutate(across(where(is.numeric), ~ .x - lag(.x)))
 ```

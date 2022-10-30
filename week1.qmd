@@ -186,7 +186,7 @@ Now, lets do something a little more interesting. We can pull in data from all k
 #| warning: false
 library(tidyverse)
 
-us = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
+us = read_csv("https://github.com/nytimes/covid-19-data/raw/master/us-states.csv")
 
 us_daily_cases = us %>% 
   # make each state its own column

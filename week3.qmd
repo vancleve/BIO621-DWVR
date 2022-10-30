@@ -185,9 +185,10 @@ where you have a small "anonymous" (unnamed) function here that gets a logical v
 
 Now let's slice some real **DATA**. We'll return to the COVID-19 data from the New York Times (<https://github.com/nytimes/covid-19-data>). Below we load the data and transform it from cumulative counts to daily counts of cases. Finally, we select case data for 2021 only.
 ```{r}
+#| message: false
 library(tidyverse)
 
-us = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
+us = read_csv("https://github.com/nytimes/covid-19-data/raw/master/us-states.csv")
 
 us_cases_2021_wide = us %>%
   # make each state its own column
