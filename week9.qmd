@@ -1,13 +1,11 @@
 ---
 title: 'Text manipulation: regular expressions'
 author: "Jeremy Van Cleve"
-date: 1st November 2021
-output: html_document
+date: 7 Nov 2022
+format: 
+  html:
+    self-contained: true
 ---
-  
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 # Reminders
 
@@ -41,7 +39,7 @@ Computers store information in bits and while it can seems intuitive to convert 
 
 Since 128 characters is not enough to encode characters found in many foreign languages (particularly those with non-Roman characters), other encodings exist that do much better. The main encoding in use on the internet now is "Unicode", which contains a repertoire of more than 128,000 characters covering 135 modern and historic scripts. The most common variant of Unicode is "UTF-8", which was designed for backward compatibility with ASCII.
 
-As more and more computer software moves to use UTF-8 as the default encoding, encoding will become something users don't have to worry about. However, some software, including older R functions, may read into text expecting ASCII or some limited encoding when text is actually UTF-8. This means that some or all of the text will look mangled, say like this:
+As more and more computer software moves to use UTF-8 as the default encoding, encoding will become something users don't have to worry about. However, some software, including older R functions, may read in text expecting ASCII or some limited encoding when text is actually UTF-8. This means that some or all of the text will look mangled, say like this:
 
 > ÉGÉìÉRÅ[ÉfÉBÉìÉOÇÕìÔÇµÇ≠Ç»Ç¢
 
@@ -68,7 +66,7 @@ print("A 'quote' within a quote")
 print('Another "quote" within a quote')
 ```
 
-Note in the second example how R converted the single quotes defining the string to double quotes and put backslashes before the double quotes inside the string? This is how you can tell R to ignore the special function some characters have. Within a double quoted string, a double quote would mean "end of the string". Putting a backslash before the double quote says "this is just a double quote character." Generally, putting a backslash before a character in a string "*escapes*" the character. Other special "escape characters", which are often characters you can't type with the keyboard easily, include tab, "\t", and the end-of-line character, "\n".
+Note in the second example how R converted the single quotes defining the string to double quotes and put backslashes before the double quotes inside the string. This is how you can tell R to ignore the special function some characters have. Within a double quoted string, a double quote would mean "end of the string". Putting a backslash before the double quote says "this is just a double quote character." Generally, putting a backslash before a character in a string "*escapes*" the character. Other special "escape characters", which are often characters you can't type with the keyboard easily, include tab, "\t", and the end-of-line character, "\n".
 
 ```{r}
 cat("a tab separates this\tand\tthis\n")
@@ -81,6 +79,7 @@ cat("creating multiple lines\nis easy with the end-of-line\ncharacter")
 First, load `stringr` via `tidyverse.
 
 ```{r}
+#| message: false
 library(tidyverse)
 ```
 
@@ -175,17 +174,17 @@ In the previous examples, strings were matched directly and entirely; either the
 Like the quote characters and backslash, regex have special characters that are meant to represent something other than the character itself. The metacharacters are: '. \\ | ( [ { ^ $ * + ?'. To see how some of them work, you can use the function `str_view_all()`, which shows visually all places where a regex matches a string.
 
 - `.`: match any character
-    ```{r}
-    str_view_all("some characters #*$#(", ".")
-    ```
+  ```{r}
+  str_view_all("some characters #*$#(", ".")
+  ```
 - `^`: match at the beginning of the string
-    ```{r}
-    str_view_all(c("trump", "gingrich is a troll", "travesty"), "^tr")
-    ```
+  ```{r}
+  str_view_all(c("trump", "gingrich is a troll", "travesty"), "^tr")
+  ```
 - `$`: match at the end of the string
-    ```{r}
-    str_view_all(c("trump", "gingrich is a sycophant", "travesty"), "p$")
-    ```
+  ```{r}
+  str_view_all(c("trump", "gingrich is a sycophant", "travesty"), "p$")
+  ```
 - `|`, `[]`: creating alternatives and character classes; see below
 - `*`, `+`, `?`, `{}`: quantifiers; see below
 - `()`: create "groups"; see below
@@ -208,20 +207,20 @@ str_view_all("we have to go back to our abc's to figure out what happened in 201
 
 Finally, there are some handy character classes that are built into regex. For example,
 
--  `\d`, `\D`, `\s`, `\S`, and `\w` represent any decimal digit, not a digit, a space character, not a space character, and a ‘word’ character, respectively
-    ```{r}
-    # we need the extra "\" so that the "\" is actually included in the string!
-    str_view_all("we have to go back to our abc's to figure out what happened in 2016!!!!", "\\d") 
-    str_view_all("we have to go back to our abc's to figure out what happened in 2016!!!!", "\\D") 
-    str_view_all("we have to go back to our abc's to figure out what happened in 2016!!!!", "\\s")
-    str_view_all("we have to go back to our abc's to figure out what happened in 2016!!!!", "\\S")
-    str_view_all("we have to go back to our abc's to figure out what happened in 2016!!!!", "\\w")
-    ```
+- `\d`, `\D`, `\s`, `\S`, and `\w` represent any decimal digit, not a digit, a space character, not a space character, and a ‘word’ character, respectively
+  ```{r}
+  # we need the extra "\" so that the "\" is actually included in the string!
+  str_view_all("we have to go back to our abc's to figure out what happened in 2016!!!!", "\\d") 
+  str_view_all("we have to go back to our abc's to figure out what happened in 2016!!!!", "\\D") 
+  str_view_all("we have to go back to our abc's to figure out what happened in 2016!!!!", "\\s")
+  str_view_all("we have to go back to our abc's to figure out what happened in 2016!!!!", "\\S")
+  str_view_all("we have to go back to our abc's to figure out what happened in 2016!!!!", "\\w")
+  ```
 - `\b` and `\B`: matches the empty string at either edge of a word, or not at the edge of a word, respectively. The example below shows how this allows you to match the character "h" either at the edge of a word or within a word.
-    ```{r}
-    str_view_all("we have to go back to our abc's to figure out what happened in 2016!!!!", "\\bh") 
-    str_view_all("we have to go back to our abc's to figure out what happened in 2016!!!!", "\\Bh")
-    ```
+  ```{r}
+  str_view_all("we have to go back to our abc's to figure out what happened in 2016!!!!", "\\bh") 
+  str_view_all("we have to go back to our abc's to figure out what happened in 2016!!!!", "\\Bh")
+  ```
 
 Other built in character classes are specified with "[::]" or ranges such as [a-z]. Some of these include
 
@@ -234,7 +233,7 @@ Other built in character classes are specified with "[::]" or ranges such as [a-
 - `[:space:]`: space characters: tab, newline, vertical tab, form feed, carriage return, space.
 - `[:punct:]`: punctuation characters, ! " # $ % & ’ ( ) * + , - . / : ; < = > ? @ [  ] ^ _ ` { | } ~.
 
-Finally, it is important to note that unless otherwise specified, when we put a character like "a" in a regex, the regex will match "a" and not "A". In other words, regex are case sensitive:
+Finally, it is important to note that unless otherwise specified, when we put a character like "a" in a regex, the regex will match "a" and not "A". In other words, regex are **case sensitive**:
 ```{r}
 str_view_all("We have to go Back to our ABC's to figure out what happened in 2016!!!!", "[abc]")
 ```
@@ -311,19 +310,19 @@ This is a good places to learn the basics too in a more fun way:
 
 ### Problems
 
-1. Go to <https://regexcrossword.com/challenges/beginner>. Solve the first three puzzles and submit the answers to them.
+1. Go to <https://regexcrossword.com/challenges/beginner>. Solve the first four puzzles and submit the answers to them.
 
 2. Write your own 2x2 regex crossword in the style of the puzzles in problem #1. Provide the puzzle and solution.
 
 3. Use this county-level COVID-19 data from the New York Times for 2020.
-    ```{r message=FALSE}
-    us = read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/rolling-averages/us-counties-2020.csv")
-    ```
-    - Create a data frame that has total cases (use `cases`, not average or per capita) for each day for three types of counties: counties with (1) "john", (2) "jack", and (3) "george" anywhere in name. This is complicated so I'll lead you through in steps.
-      1. Use `mutate` and `str_detect` to create three new columns that have `TRUE` if the county name matches "john", "jack" or "george".
-      2. Filter out the rows with counties that don't match one of the three county types above.
-      3. Use `pivot_longer` to make a column called `county_type` that has the column names from step 1 and and a `values` column.
-      4. Filter out rows that have `values == FALSE`.
-      5. Use `summarize` to sum over all the cases in counties with the same `county_type` for each day.
-    - Create a line plot of cases over time for each county type. Make sure the plot title and labels are descriptive using `labs`.
-    
+   ```{r}
+   #| message: false
+   us = read_csv("https://github.com/nytimes/covid-19-data/raw/master/rolling-averages/us-counties-2020.csv")
+   ```
+   - Create a data frame that has total cases (use `cases`, not average or per capita) for each day for three types of counties: counties with (1) "john", (2) "jack", and (3) "george" anywhere in name. This is complicated so I'll lead you through in steps.
+     1. Use `mutate` and `str_detect` to create three new columns that have `TRUE` if the county name matches "john", "jack" or "george".
+     2. Filter out the rows with counties that don't match one of the three county types above.
+     3. Use `pivot_longer` to make a column called `county_type` that has the column names from step 1 and and a `values` column.
+     4. Filter out rows that have `values == FALSE`.
+     5. Use `summarize` to sum over all the cases in counties with the same `county_type` for each day.
+   - Create a line plot of cases over time for each county type. Make sure the plot title and labels are descriptive using `labs`.
