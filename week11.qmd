@@ -19,13 +19,13 @@ format:
 
 # Plotting data with many variables
 
-In many of the datasets that we've seen so far, we've already been faced with the problem that the data could be visualized in many different ways because they have many different variables. Some datasets were time series and it was clear that scatter plots or line plots were useful with time on the x-axis and multiple variables on the y-axis. For example, these global COVID-19 data from Our World in Data (<https://github.com/owid/covid-19-data/tree/master/public/data>)
+In many of the datasets that we've seen so far, we've already been faced with the problem that the data could be visualized in many different ways because they have many different variables. Some datasets were time series and it was clear that scatter plots or line plots were useful with time on the x-axis and multiple variables on the y-axis. For example, these global COVID-19 data from Our World in Data (<https://github.com/owid/covid-19-data/tree/master/public/data>) for the year 2021
 ```{r}
 #| message: false
 library(tidyverse)
 theme_set(theme_classic())
 
-owid = read_csv("https://github.com/owid/covid-19-data/raw/master/public/data/owid-covid-data.csv")
+owid = read_csv("https://github.com/vancleve/BIO621-DWVR/raw/main/owid-covid-data_2021.csv")
 ```
 ```{r}
 owid
@@ -116,7 +116,7 @@ However, even with standard `ggplot`, we can still get more than 1/2 to what thi
 
 ## Principal component analysis (PCA) plots
 
-Recall that the blue jay dataset has more than just the three variables above. What if it had 10 more variables? Or 100 more? We couldn't easily interpret a 100x100 grid of scatter plots to understand how the variables relate to one another or whether there are different patterns for males and females. A very useful statistical tools used in these circumstances is called a *principal component analysis*, which is a type of *dimensionality reduction*. Dimensionality reduction uses the fact that there are often lots of correlations in high-dimensional data and thus there are "effectively" many fewer important dimensions that capture the independent variation of the whole dataset. For example, in the blue jay morphology data, we can see that many body measures are possitively correlated. Thus, if we know just body mass, we can make a good guess about what head size or skull size might be. We could even do a linear regression of head size against body mass and skull size against body mass and then use body mass to predict both of those variables. If we do this kind of linear analysis, adding together variables and weighting them with coefficient, and make sure the weight sum of variables explains as much variation in the data as possible, we end up with a PCA. A PCA not only gives you a new variable that explains a lot of variation, it also gives you as many new variables as you had old variables where each new one after the first explains less variation in the data than the new variable before it. 
+Recall that the blue jay dataset has more than just the three variables above. What if it had 10 more variables? Or 100 more? We couldn't easily interpret a 100x100 grid of scatter plots to understand how the variables relate to one another or whether there are different patterns for males and females. A very useful statistical tools used in these circumstances is called a *principal component analysis*, which is a type of *dimensionality reduction*. Dimensionality reduction uses the fact that there are often lots of correlations in high-dimensional data and thus there are "effectively" many fewer important dimensions that capture the independent variation of the whole dataset. For example, in the blue jay morphology data, we can see that many body measures are positively correlated. Thus, if we know just body mass, we can make a good guess about what head size or skull size might be. We could even do a linear regression of head size against body mass and skull size against body mass and then use body mass to predict both of those variables. If we do this kind of linear analysis, adding together variables and weighting them with coefficient, and make sure the weight sum of variables explains as much variation in the data as possible, we end up with a PCA. A PCA not only gives you a new variable that explains a lot of variation, it also gives you as many new variables as you had old variables where each new one after the first explains less variation in the data than the new variable before it. 
 
 Let's see an example of PCA. We can use the `prcomp` function is R to generate the principal components.
 
@@ -191,16 +191,19 @@ data.frame(gene=rownames(ipca$rotation), ipca$rotation) %>%
     - Color the points according to `year`. Set the shape of the point (square, circle, etc) according to `continent`.
     - What patterns do you observe if any?
     
-2. The Our World in Data COVID-19 dataset is perfect for performing a PCA. Use the code below that generates the `owid_total` data table. This contains a set of variables from the OWID dataset and the total deaths per million by the beginning of November 2022.
-    ```{r}
-    owid_total = 
-      read_csv("https://github.com/owid/covid-19-data/raw/master/public/data/owid-covid-data.csv") %>% 
-      filter(date == "2022-11-01", !is.na(continent)) %>% 
-      select(location, total_deaths_per_million, total_cases_per_million, people_vaccinated_per_hundred, population_density, median_age, male_smokers, cardiovasc_death_rate, diabetes_prevalence, life_expectancy, gdp_per_capita) %>% 
-      filter(if_all(everything(), ~ !is.na(.x)))
-    ```
-    - Run a PCA including all the varialbes except `location` and `total_cases_per_million`. What variables "weigh" the strongest (have the largest absolute value) in the first three principal components?
-    - Use `cbind(owid_total, your_PCA$x)` to generate a new data frame
-    - Use the above data frame to plot countries by their location in the coordinates of PC1 and PC2. Color the points by whether they have great than 1e5 total cases per million. What do you notice about the where the points are with the higher number of total cases? Interpret this in terms of the most important variables in PC1 and PC2.
-    - Adding `geom_text` to label the points by their country (location) name is a nice addition to the plot, but its optional.
-    
+2. The Our World in Data COVID-19 dataset is perfect for performing a PCA. Use the code below that generates the `owid_total` data table. This contains a set of variables from the OWID dataset and the total deaths per million by the end of the year 2021.
+   ```{r}
+   #| message: false
+   owid_total = 
+   read_csv("https://github.com/vancleve/BIO621-DWVR/raw/main/owid-covid-data_2021.csv") %>% 
+   filter(date == "2021-12-31") %>% 
+   select(location, total_deaths_per_million, total_cases_per_million, people_vaccinated_per_hundred, 
+          population_density, median_age, male_smokers, cardiovasc_death_rate, diabetes_prevalence, life_expectancy, gdp_per_capita) %>% 
+   filter(if_all(everything(), ~ !is.na(.x)))
+   ```
+   - Run a PCA including all the variables except `location` and `total_deaths_per_million`. What variables "weigh" the strongest (have the largest absolute value) in the first three principal components?
+   - Use `cbind(owid_total, your_PCA$x)` to generate a new data frame
+   - Use the above data frame to plot countries by their location in the coordinates of PC1 and PC2. Color the points by whether they have great than 1000 total deaths per million. What do you notice about the where the points are with the higher number of total cases? Interpret this in terms of the most important variables in PC1 and PC2.
+   - Adding `geom_text` to label the points by their country (location) name is a nice addition to the plot, but its optional.
+
+
