@@ -1,13 +1,12 @@
 ---
 title: 'Visualizing lots of data'
 author: "Jeremy Van Cleve"
-date: 15th November 2021
-output: html_document
+date: 21 Nov 2022
+format: 
+  html:
+    self-contained: true
 ---
   
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 # Outline for today
 
@@ -21,11 +20,12 @@ knitr::opts_chunk$set(echo = TRUE)
 # Plotting data with many variables
 
 In many of the datasets that we've seen so far, we've already been faced with the problem that the data could be visualized in many different ways because they have many different variables. Some datasets were time series and it was clear that scatter plots or line plots were useful with time on the x-axis and multiple variables on the y-axis. For example, these global COVID-19 data from Our World in Data (<https://github.com/owid/covid-19-data/tree/master/public/data>)
-```{r, message=FALSE}
+```{r}
+#| message: false
 library(tidyverse)
 theme_set(theme_classic())
 
-owid = read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv")
+owid = read_csv("https://github.com/owid/covid-19-data/raw/master/public/data/owid-covid-data.csv")
 ```
 ```{r}
 owid
@@ -191,12 +191,12 @@ data.frame(gene=rownames(ipca$rotation), ipca$rotation) %>%
     - Color the points according to `year`. Set the shape of the point (square, circle, etc) according to `continent`.
     - What patterns do you observe if any?
     
-2. The Our World in Data COVID-19 dataset is perfect for performing a PCA. Use the code below that generates the `owid_total` data table. This contains a set of variables from the OWID dataset and the total cases per million by the beginning of November 2021.
+2. The Our World in Data COVID-19 dataset is perfect for performing a PCA. Use the code below that generates the `owid_total` data table. This contains a set of variables from the OWID dataset and the total deaths per million by the beginning of November 2022.
     ```{r}
     owid_total = 
-      read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv") %>% 
-      filter(date == "2021-11-01", !is.na(continent)) %>% 
-      select(location, total_cases_per_million, stringency_index, people_vaccinated_per_hundred, population_density, median_age, male_smokers, life_expectancy) %>% 
+      read_csv("https://github.com/owid/covid-19-data/raw/master/public/data/owid-covid-data.csv") %>% 
+      filter(date == "2022-11-01", !is.na(continent)) %>% 
+      select(location, total_deaths_per_million, total_cases_per_million, people_vaccinated_per_hundred, population_density, median_age, male_smokers, cardiovasc_death_rate, diabetes_prevalence, life_expectancy, gdp_per_capita) %>% 
       filter(if_all(everything(), ~ !is.na(.x)))
     ```
     - Run a PCA including all the varialbes except `location` and `total_cases_per_million`. What variables "weigh" the strongest (have the largest absolute value) in the first three principal components?
