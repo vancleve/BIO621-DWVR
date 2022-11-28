@@ -191,24 +191,24 @@ under “Modules: References”.
 The following is the preliminary schedule of topics and will be adjusted
 as the semester progress.
 
-| Week | Class Dates (W) | Topic                                               | Notes |
-|------|-----------------|-----------------------------------------------------|-------|
-| 1    | 08/22           | Intro to course and markdown, and Quarto            |       |
-| 2    | 08/29           | Intro to R: data types, flow control, and functions |       |
-|      | 09/05           | No class (Labor Day)                                |       |
-| 3    | 09/12           | Vectors, slicing, and map(ping)                     |       |
-| 4    | 09/19           | Getting data into R with data.frames                |       |
-| 5    | 09/26           | Tidy Data                                           |       |
-| 6    | 10/03           | Introduction to plotting and `ggplot2`              |       |
-| 7    | 10/10           | Plot types in `ggplot2`                             |       |
-|      | 10/17           | No class (JVC at international conference)          |       |
-|      | 10/24           | No class (Fall Break)                               |       |
-| 8    | 10/31           | Principles of displaying data & how to modify plots |       |
-| 9    | 11/07           | Text manipulation: regular expressions              |       |
-| 10   | 11/14           | Colors and heat maps                                |       |
-| 11   | 11/21           | Visualizing lots of data                            |       |
-| 12   | 11/28           | Networks                                            |       |
-| 13   | 12/05           | Project Presentations                               |       |
+| Week | Class Dates (W) | Topic                                               | Link                                                       |
+|------|-----------------|-----------------------------------------------------|------------------------------------------------------------|
+| 1    | 08/22           | Intro to course and markdown, and Quarto            | [html](https://vancleve.github.io/BIO621-DWVR/week1.html)  |
+| 2    | 08/29           | Intro to R: data types, flow control, and functions | [html](https://vancleve.github.io/BIO621-DWVR/week2.html)  |
+|      | 09/05           | No class (Labor Day)                                |                                                            |
+| 3    | 09/12           | Vectors, slicing, and map(ping)                     | [html](https://vancleve.github.io/BIO621-DWVR/week3.html)  |
+| 4    | 09/19           | Getting data into R with data.frames                | [html](https://vancleve.github.io/BIO621-DWVR/week4.html)  |
+| 5    | 09/26           | Tidy Data                                           | [html](https://vancleve.github.io/BIO621-DWVR/week5.html)  |
+| 6    | 10/03           | Introduction to plotting and `ggplot2`              | [html](https://vancleve.github.io/BIO621-DWVR/week6.html)  |
+| 7    | 10/10           | Plot types in `ggplot2`                             | [html](https://vancleve.github.io/BIO621-DWVR/week7.html)  |
+|      | 10/17           | No class (JVC at international conference)          |                                                            |
+|      | 10/24           | No class (Fall Break)                               |                                                            |
+| 8    | 10/31           | Principles of displaying data & how to modify plots | [html](https://vancleve.github.io/BIO621-DWVR/week8.html)  |
+| 9    | 11/07           | Text manipulation: regular expressions              | [html](https://vancleve.github.io/BIO621-DWVR/week9.html)  |
+| 10   | 11/14           | Colors and heat maps                                | [html](https://vancleve.github.io/BIO621-DWVR/week10.html) |
+| 11   | 11/21           | Visualizing lots of data                            | [html](https://vancleve.github.io/BIO621-DWVR/week11.html) |
+| 12   | 11/28           | Networks                                            | [html](https://vancleve.github.io/BIO621-DWVR/week12.html) |
+| 13   | 12/05           | Project Presentations                               |                                                            |
 
 # Course policies
 
